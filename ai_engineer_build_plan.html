@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineer — Build-First Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb;
+  --ink: #1a1a16;
+  --ink2: #3d3d36;
+  --muted: #8a8a7e;
+  --border: #d8d4c8;
+  --w1: #e8500a;
+  --w2: #1a6b3e;
+  --w3: #2255c4;
+  --w4: #8b2fc9;
+  --w5: #c4800a;
+  --w6: #1a1a16;
+  --surface: #fffef9;
+  --surface2: #eeeae0;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Instrument Sans', sans-serif;
+  min-height: 100vh;
+}
+
+/* Noise texture overlay */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:999;
+  opacity:0.6;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 52px 28px 100px;
+}
+
+/* ── HEADER ── */
+.header {
+  margin-bottom: 56px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 32px;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(34px, 6vw, 54px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+h1 em {
+  font-style: normal;
+  -webkit-text-stroke: 1.5px var(--ink);
+  color: transparent;
+}
+
+.header-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--ink2);
+  background: var(--surface);
+}
+
+.pill.accent { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* ── PHILOSOPHY BOX ── */
+.philosophy {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 28px 32px;
+  border-radius: 4px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.philosophy::before {
+  content: '80% BUILD · 20% CONCEPT';
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(245,242,235,0.2);
+  white-space: nowrap;
+}
+
+.philosophy h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #f5f2eb;
+}
+
+.philosophy p {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: rgba(245,242,235,0.75);
+  max-width: 640px;
+}
+
+/* ── WEEK CARDS ── */
+.weeks { display: flex; flex-direction: column; gap: 0; }
+
+.week {
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--surface);
+  overflow: hidden;
+  transition: background 0.15s;
+}
+
+.week:first-child { border-radius: 6px 6px 0 0; }
+.week:last-child { border-bottom: 1px solid var(--border); border-radius: 0 0 6px 6px; }
+
+.week-toggle {
+  display: grid;
+  grid-template-columns: 80px 1fr auto 24px;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.week-toggle:hover { background: var(--surface2); }
+.week.open .week-toggle { background: var(--surface2); border-bottom: 1px solid var(--border); }
+
+.wnum {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.w1 .wnum { color: var(--w1); }
+.w2 .wnum { color: var(--w2); }
+.w3 .wnum { color: var(--w3); }
+.w4 .wnum { color: var(--w4); }
+.w5 .wnum { color: var(--w5); }
+.w6 .wnum { color: var(--w6); }
+
+.wtitle {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  color: var(--ink);
+}
+
+.wsub {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.wbadge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+  border: 1px solid currentColor;
+}
+
+.w1 .wbadge { color: var(--w1); background: rgba(232,80,10,0.06); }
+.w2 .wbadge { color: var(--w2); background: rgba(26,107,62,0.06); }
+.w3 .wbadge { color: var(--w3); background: rgba(34,85,196,0.06); }
+.w4 .wbadge { color: var(--w4); background: rgba(139,47,201,0.06); }
+.w5 .wbadge { color: var(--w5); background: rgba(196,128,10,0.06); }
+.w6 .wbadge { color: var(--w6); background: rgba(26,26,22,0.06); }
+
+.chevron { color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+.week.open .chevron { transform: rotate(180deg); }
+
+/* Week body */
+.week-body {
+  display: none;
+  padding: 28px 24px 32px;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.week.open .week-body { display: flex; }
+
+/* Section title */
+.stitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* Build target — the main project */
+.build-target {
+  border-left: 3px solid currentColor;
+  padding: 16px 20px;
+  background: var(--bg);
+  border-radius: 0 6px 6px 0;
+}
+
+.w1 .build-target { color: var(--w1); }
+.w2 .build-target { color: var(--w2); }
+.w3 .build-target { color: var(--w3); }
+.w4 .build-target { color: var(--w4); }
+.w5 .build-target { color: var(--w5); }
+.w6 .build-target { color: var(--w6); }
+
+.build-target .bt-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.build-target .bt-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.build-target .bt-desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink2);
+}
+
+/* Stack tags */
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  color: var(--ink2);
+  background: var(--surface);
+}
+
+.tag.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* Task rows */
+.tasks { display: flex; flex-direction: column; gap: 10px; }
+
+.task {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 13px 16px;
+  background: var(--bg);
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.task-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  padding-top: 2px;
+}
+
+.task-title { font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+.task-detail { font-size: 12px; color: var(--ink2); line-height: 1.6; }
+
+.task-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.task-link:hover { color: var(--ink); border-color: var(--ink); }
+
+/* Concept box — minimal, never dominates */
+.concept-box {
+  background: var(--surface2);
+  border-radius: 4px;
+  padding: 16px 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink2);
+  border: 1px solid var(--border);
+}
+
+.concept-box strong { color: var(--ink); font-weight: 600; }
+
+/* Income box */
+.income-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.income-item {
+  padding: 14px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.income-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.income-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.income-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Deliverable final */
+.deliverable-final {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 4px;
+  padding: 24px 28px;
+}
+
+.deliverable-final h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.deliverable-final p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(245,242,235,0.78);
+}
+
+.deliverable-final ul {
+  margin-top: 12px;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.deliverable-final li {
+  font-size: 13px;
+  color: rgba(245,242,235,0.78);
+  line-height: 1.5;
+}
+
+/* Day schedule */
+.daygrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.daycell {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px;
+  background: var(--bg);
+  font-size: 12px;
+}
+
+.daycell .daylabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+
+.daycell .dayact { font-weight: 500; color: var(--ink); line-height: 1.4; }
+.daycell .daydur { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* Salary progress bar */
+.salary-track {
+  margin-bottom: 48px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.salary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+
+.salary-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.salary-target {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.salary-weeks {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 6px;
+}
+
+.sw {
+  text-align: center;
+  cursor: pointer;
+}
+
+.sw-bar-wrap {
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.sw-bar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  transition: opacity 0.2s;
+}
+
+.sw:hover .sw-bar { opacity: 0.7; }
+.sw-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); }
+.sw-activity { font-size: 10px; color: var(--ink2); margin-top: 2px; line-height: 1.3; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.header { animation: fadeUp 0.5s ease both; }
+.philosophy { animation: fadeUp 0.5s 0.08s ease both; }
+.salary-track { animation: fadeUp 0.5s 0.12s ease both; }
+.weeks { animation: fadeUp 0.5s 0.18s ease both; }
+
+@media (max-width: 580px) {
+  .week-toggle { grid-template-columns: 56px 1fr 24px; }
+  .wbadge { display: none; }
+  .income-box { grid-template-columns: 1fr; }
+  .daygrid { grid-template-columns: 1fr 1fr; }
+  .salary-weeks { grid-template-columns: repeat(3,1fr); }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">Revised Plan · Build-First · 6 Weeks</div>
+  <h1>AI Engineer.<br><em>Build Fast.</em><br>Get Paid.</h1>
+  <div class="header-pills">
+    <span class="pill accent">80% Building · 20% Concepts</span>
+    <span class="pill">JavaScript + Python ✓</span>
+    <span class="pill">Claude API ✓</span>
+    <span class="pill">Make.com ✓</span>
+    <span class="pill">n8n ✓</span>
+    <span class="pill">Target: $1–3K/mo in 60 days</span>
+  </div>
+</div>
+
+<!-- PHILOSOPHY -->
+<div class="philosophy">
+  <h2>The new rule: concepts emerge from building, not the other way around.</h2>
+  <p>You don't need to understand transformers to deploy an AI workflow that earns money. You need to ship something real every week, hit walls, solve them, and charge for the result. Every concept introduced in this plan is introduced the moment you need it — not before. Week 1 you build something deployable. Week 6 you pitch it to paying clients in UAE/Saudi.</p>
+</div>
+
+<!-- SALARY PROGRESS CHART -->
+<div class="salary-track">
+  <div class="salary-header">
+    <span class="salary-title">Revenue unlock by week</span>
+    <span class="salary-target">Target: $1,000–3,000/mo retainer by Week 6</span>
+  </div>
+  <div class="salary-weeks">
+    <div class="sw" onclick="openWeek(0)">
+      <div class="sw-bar-wrap"><div class="sw-bar" style="height:20%;background:var(--w1)"></div></div>
+      <div class="sw-num">WK 1</div>
+      <div class="sw-activity">First working agent</div>
+    </div>
+    <div class="sw" onclick="openWeek(1)">
+      <div class="sw-bar-wrap"><div class="sw-bar" style="height:38%;background:var(--w2)"></div></div>
+      <div class="sw-num">WK 2</div>
+      <div class="sw-activity">Make.com workflow</div>
+    </div>
+    <div class="sw" onclick="openWeek(2)">
+      <div class="sw-bar-wrap"><div class="sw-bar" style="height:55%;background:var(--w3)"></div></div>
+      <div class="sw-num">WK 3</div>
+      <div class="sw-activity">WhatsApp agent</div>
+    </div>
+    <div class="sw" onclick="openWeek(3)">
+      <div class="sw-bar-wrap"><div class="sw-bar" style="height:70%;background:var(--w4)"></div></div>
+      <div class="sw-num">WK 4</div>
+      <div class="sw-activity">Multi-agent flow</div>
+    </div>
+    <div class="sw" onclick="openWeek(4)">
+      <div class="sw-bar-wrap"><div class="sw-bar" style="height:85%;background:var(--w5)"></div></div>
+      <div class="sw-num">WK 5</div>
+      <div class="sw-activity">RAG + memory</div>
+    </div>
+    <div class="sw" onclick="openWeek(5)">
+      <div class="sw-bar-wrap"><div class="sw-bar" style="height:100%;background:var(--w6)"></div></div>
+      <div class="sw-num">WK 6</div>
+      <div class="sw-activity">Package + pitch</div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEKS -->
+<div class="weeks" id="weeks">
+
+  <!-- ── WEEK 1 ── -->
+  <div class="week w1" id="wk0">
+    <div class="week-toggle" onclick="toggleWeek(this)">
+      <div class="wnum">01</div>
+      <div>
+        <div class="wtitle">Your First Working AI Agent</div>
+        <div class="wsub">Claude API · Node.js · Tool use · Agentic loops</div>
+      </div>
+      <span class="wbadge">BUILD + SHIP</span>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="week-body">
+
+      <div>
+        <div class="stitle">What you build this week</div>
+        <div class="build-target">
+          <div class="bt-label">Project 1</div>
+          <div class="bt-name">Dubai Property Lead Qualifier Agent</div>
+          <div class="bt-desc">A Node.js script that takes a raw property inquiry (text), uses Claude API with tool use to extract intent, budget, location preference, and buyer type, then outputs a structured JSON lead record. No UI needed — this is the core intelligence you'll wire into Make.com next week. This is a real, deployable thing a Dubai brokerage would pay for.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Stack</div>
+        <div class="stack">
+          <span class="tag primary">Claude API</span>
+          <span class="tag primary">Tool Use / Function Calling</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">@anthropic-ai/sdk</span>
+          <span class="tag">dotenv</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Build steps</div>
+        <div class="tasks">
+          <div class="task">
+            <div class="task-num">01</div>
+            <div>
+              <div class="task-title">Set up project + install SDK</div>
+              <div class="task-detail"><code>npm init -y && npm install @anthropic-ai/sdk dotenv</code>. Create a .env file with your ANTHROPIC_API_KEY. Test with a simple "hello" message call to verify connection.</div>
+              <a class="task-link" href="https://docs.anthropic.com/en/api/getting-started" target="_blank">docs.anthropic.com/getting-started →</a>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">02</div>
+            <div>
+              <div class="task-title">Read: Tool Use (Function Calling) docs — full</div>
+              <div class="task-detail">This is the single most important concept for agentic AI. Tool use lets Claude call functions you define — like querying a database, sending a message, or extracting structured data. Read every example. ~45 min.</div>
+              <a class="task-link" href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use" target="_blank">docs.anthropic.com/tool-use →</a>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">03</div>
+            <div>
+              <div class="task-title">Build the lead extraction tool</div>
+              <div class="task-detail">Define a tool called <code>extract_lead</code> with parameters: intent (buy/rent/invest), budget_aed (number), locations (array), buyer_type (individual/investor/company), urgency (immediate/3months/exploring). Feed it sample WhatsApp-style inquiries in Arabic and English. Verify the JSON output is consistent.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">04</div>
+            <div>
+              <div class="task-title">Add an agentic loop</div>
+              <div class="task-detail">Extend it: if the inquiry is too vague (budget missing, no location), Claude should call a <code>request_clarification</code> tool instead — returning a follow-up question. This is your first agentic decision loop: the model decides which tool to call based on input quality. Read the "Agentic AI" section in Anthropic docs.</div>
+              <a class="task-link" href="https://docs.anthropic.com/en/docs/build-with-claude/agentic-ai" target="_blank">docs.anthropic.com/agentic-ai →</a>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">05</div>
+            <div>
+              <div class="task-title">Test with 10 real-world inquiry samples</div>
+              <div class="task-detail">Write 10 sample inquiries yourself — mix of English and Arabic-style phrasing, varying levels of detail, different intents. Run all 10 through your agent. Note where it fails. Fix the system prompt. This is prompt engineering in practice, not theory.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <strong>The one concept to internalize this week:</strong> An "agentic loop" is when the LLM decides what tool to call next based on its own output. It's not a chatbot that answers questions — it's a decision-maker that takes actions. Your lead qualifier decides: "do I have enough data to extract, or do I ask a follow-up?" That decision loop is the foundation of every agent workflow you'll build.
+      </div>
+
+      <div>
+        <div class="stitle">Weekly schedule</div>
+        <div class="daygrid">
+          <div class="daycell"><div class="daylabel">Mon</div><div class="dayact">Setup + SDK test + Tool use docs</div><div class="daydur">2 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Wed</div><div class="dayact">Build extract_lead tool + test</div><div class="daydur">2 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Weekend</div><div class="dayact">Agentic loop + 10-sample test</div><div class="daydur">3 hrs</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WEEK 2 ── -->
+  <div class="week w2" id="wk1">
+    <div class="week-toggle" onclick="toggleWeek(this)">
+      <div class="wnum">02</div>
+      <div>
+        <div class="wtitle">Make.com + Claude — First Automation</div>
+        <div class="wsub">Make.com · HTTP modules · Webhooks · CRM push</div>
+      </div>
+      <span class="wbadge">NO-CODE + AI</span>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" green stroke="currentColor" width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="week-body">
+
+      <div>
+        <div class="stitle">What you build this week</div>
+        <div class="build-target">
+          <div class="bt-label">Project 2</div>
+          <div class="bt-name">End-to-End Lead Qualification Pipeline</div>
+          <div class="bt-desc">Wire your Week 1 agent into Make.com. The flow: new form submission or email arrives → Make.com webhook triggers → HTTP module calls your Claude agent → structured lead JSON → pushed to Google Sheets (or Airtable) as a qualified lead record, with an automatic WhatsApp reply sent to the prospect. This is a complete, sellable automation.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Stack</div>
+        <div class="stack">
+          <span class="tag primary">Make.com</span>
+          <span class="tag primary">HTTP Module (Claude API)</span>
+          <span class="tag">Webhooks</span>
+          <span class="tag">Google Sheets</span>
+          <span class="tag">WhatsApp Business API</span>
+          <span class="tag">JSON parsing</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Build steps</div>
+        <div class="tasks">
+          <div class="task">
+            <div class="task-num">01</div>
+            <div>
+              <div class="task-title">Make.com crash course — official tutorials (3 hrs)</div>
+              <div class="task-detail">Watch Make.com's getting started series. Understand: scenarios, modules, webhooks, filters, data stores, error handling. Don't build yet — just watch and understand the visual programming model.</div>
+              <a class="task-link" href="https://www.make.com/en/help/tutorials" target="_blank">make.com/tutorials →</a>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">02</div>
+            <div>
+              <div class="task-title">Build webhook → Claude API HTTP call</div>
+              <div class="task-detail">Create a Make.com webhook that accepts a POST body with an inquiry string. Use the HTTP module to call Anthropic's API directly (POST to https://api.anthropic.com/v1/messages with your auth header). Parse the tool_use response to extract the lead JSON. This is the core skill — calling any AI API from Make.com.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">03</div>
+            <div>
+              <div class="task-title">Push qualified lead to Google Sheets</div>
+              <div class="task-detail">Map the extracted JSON fields to a Google Sheet: timestamp, name (if in inquiry), intent, budget, location, urgency, raw_message. Add a "lead_score" column — high/medium/low based on budget threshold. This is the CRM layer.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">04</div>
+            <div>
+              <div class="task-title">Auto-reply via WhatsApp Business</div>
+              <div class="task-detail">If lead_score is high, trigger a personalized WhatsApp message back to the prospect using the WhatsApp Business Cloud API. The message is generated by Claude — not a template. Pass the lead details back to Claude and ask it to write a warm, professional first response in the prospect's language.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">05</div>
+            <div>
+              <div class="task-title">Record a 3-minute Loom demo of the full flow</div>
+              <div class="task-detail">Trigger the webhook, watch the lead appear in the sheet, show the WhatsApp reply. This Loom video is your first sales asset. Post it on LinkedIn this week with the caption: "I built this for Dubai real estate brokerages. Inquiry to qualified lead in under 8 seconds, 24/7."</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <strong>Make.com is not a toy.</strong> It's how you deliver AI agent workflows to non-technical clients without writing a full backend. The HTTP module means you can call any API — Claude, OpenAI, WhatsApp, Supabase, any webhook — from a visual flow. Most of your UAE/Saudi clients will never see code. They'll see the Make.com scenario and the results it produces.
+      </div>
+
+      <div>
+        <div class="stitle">Weekly schedule</div>
+        <div class="daygrid">
+          <div class="daycell"><div class="daylabel">Mon</div><div class="dayact">Make.com tutorials</div><div class="daydur">3 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Wed–Thu</div><div class="dayact">Build full pipeline</div><div class="daydur">3 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Weekend</div><div class="dayact">WhatsApp + Loom demo</div><div class="daydur">2 hrs</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WEEK 3 ── -->
+  <div class="week w3" id="wk2">
+    <div class="week-toggle" onclick="toggleWeek(this)">
+      <div class="wnum">03</div>
+      <div>
+        <div class="wtitle">WhatsApp AI Agent — Full Conversation</div>
+        <div class="wsub">n8n · Multi-turn memory · Conversation state · Arabic/English</div>
+      </div>
+      <span class="wbadge">FULL AGENT</span>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="week-body">
+
+      <div>
+        <div class="stitle">What you build this week</div>
+        <div class="build-target">
+          <div class="bt-label">Project 3</div>
+          <div class="bt-name">Conversational WhatsApp Property Agent</div>
+          <div class="bt-desc">A full multi-turn WhatsApp agent that handles ongoing property conversations — not just single messages. Built in n8n. The agent remembers what was said earlier in the conversation, handles Arabic and English naturally, answers property FAQs, qualifies the lead over multiple messages, and escalates to a human broker when ready. This is Zara v2 — productized for any real estate client.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Stack</div>
+        <div class="stack">
+          <span class="tag primary">n8n</span>
+          <span class="tag primary">WhatsApp Business Cloud API</span>
+          <span class="tag primary">Claude API (messages array)</span>
+          <span class="tag">Redis or n8n data store (memory)</span>
+          <span class="tag">Webhook triggers</span>
+          <span class="tag">Conditional routing</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Build steps</div>
+        <div class="tasks">
+          <div class="task">
+            <div class="task-num">01</div>
+            <div>
+              <div class="task-title">Set up WhatsApp Business Cloud API</div>
+              <div class="task-detail">Create a Meta developer account, set up a test WhatsApp Business number, configure a webhook in n8n to receive incoming messages. Test by sending a message to your test number and watching it appear in n8n. This is the plumbing — get it working before building any logic.</div>
+              <a class="task-link" href="https://developers.facebook.com/docs/whatsapp/cloud-api/" target="_blank">developers.facebook.com →</a>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">02</div>
+            <div>
+              <div class="task-title">Build conversation memory with n8n data store</div>
+              <div class="task-detail">The key challenge in multi-turn agents: the LLM has no memory between API calls. You need to store and retrieve the conversation history. Use n8n's built-in data store (or a simple JSON file keyed by WhatsApp number) to persist the messages array. On each new message: load history → append new user message → call Claude → append response → save back.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">03</div>
+            <div>
+              <div class="task-title">Write the system prompt for the property agent</div>
+              <div class="task-detail">This is your Week 1 prompt engineering payoff. Write a production system prompt that: defines the agent persona, sets response language rules (detect Arabic → respond Arabic), defines qualification goals, specifies escalation triggers (when to say "let me connect you with an agent"), and sets tone. Use XML tags for structure.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">04</div>
+            <div>
+              <div class="task-title">Add human escalation routing</div>
+              <div class="task-detail">When the lead is qualified (or asks for a human), the agent should: send a summary message to the prospect ("Our agent X will contact you within 2 hours"), post a notification to a broker's WhatsApp or Telegram with the full lead summary. This is the handoff pattern every real estate client needs.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">05</div>
+            <div>
+              <div class="task-title">Test with 5 full conversations (different personas)</div>
+              <div class="task-detail">Play 5 different prospect personas: an overseas investor, a tenant looking to rent, a vague inquiry, a very specific buyer, someone writing in Arabic. Put the agent under pressure. Fix conversation breaks. Document the failure patterns — you'll need this for client demos.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <strong>Why this week matters for income:</strong> This is the most in-demand AI product in the UAE real estate market right now. Every brokerage with 5+ agents and active WhatsApp inquiries is a potential client. The conversation memory pattern you learn here applies to every other vertical: healthcare appointment booking, restaurant reservations, customer support. One pattern, unlimited clients.
+      </div>
+
+      <div>
+        <div class="stitle">Weekly schedule</div>
+        <div class="daygrid">
+          <div class="daycell"><div class="daylabel">Mon</div><div class="dayact">WhatsApp API setup + n8n webhook</div><div class="daydur">2.5 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Wed</div><div class="dayact">Memory + system prompt</div><div class="daydur">2.5 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Weekend</div><div class="dayact">Escalation + 5-conversation test</div><div class="daydur">3 hrs</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WEEK 4 ── -->
+  <div class="week w4" id="wk3">
+    <div class="week-toggle" onclick="toggleWeek(this)">
+      <div class="wnum">04</div>
+      <div>
+        <div class="wtitle">Multi-Agent Workflow</div>
+        <div class="wsub">Orchestrator + specialist agents · n8n subflows · Agent-to-agent handoff</div>
+      </div>
+      <span class="wbadge">ADVANCED</span>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="week-body">
+
+      <div>
+        <div class="stitle">What you build this week</div>
+        <div class="build-target">
+          <div class="bt-label">Project 4</div>
+          <div class="bt-name">Property Intelligence Orchestrator</div>
+          <div class="bt-desc">A multi-agent system where one orchestrator agent coordinates three specialist agents: (1) a Lead Qualifier that extracts intent from inquiries, (2) a Market Analyst that pulls comparable properties and yields from DXBinteract data, (3) a Report Writer that generates a personalized investor brief in English or Arabic. The orchestrator decides which agents to call and in what order. This is the "agentic AI" pattern the market is paying for.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Stack</div>
+        <div class="stack">
+          <span class="tag primary">Claude API (orchestrator)</span>
+          <span class="tag primary">n8n subflows (specialist agents)</span>
+          <span class="tag">Tool use (agent routing)</span>
+          <span class="tag">DXBinteract or mock data API</span>
+          <span class="tag">PDF or HTML report generation</span>
+          <span class="tag">Make.com (delivery)</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Build steps</div>
+        <div class="tasks">
+          <div class="task">
+            <div class="task-num">01</div>
+            <div>
+              <div class="task-title">Read: Anthropic multi-agent patterns docs</div>
+              <div class="task-detail">Understand orchestrator-worker architecture. The orchestrator is a Claude instance with tools that call other agents. It doesn't do the work — it decides what work needs doing and delegates. This is exactly how large enterprise automation systems work.</div>
+              <a class="task-link" href="https://docs.anthropic.com/en/docs/build-with-claude/agentic-ai" target="_blank">docs.anthropic.com/agentic-ai →</a>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">02</div>
+            <div>
+              <div class="task-title">Build the 3 specialist agents as n8n subflows</div>
+              <div class="task-detail">Each subflow accepts a JSON input, does one specific job, and returns a JSON output. Keep them dumb and focused — the orchestrator is what makes them smart. Lead Qualifier: you built this in Week 1. Market Analyst: call a mock data endpoint (or DXBinteract if you get API access) and summarize comparable listings. Report Writer: given lead + market data, write a 300-word investor brief.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">03</div>
+            <div>
+              <div class="task-title">Build the orchestrator with tool use</div>
+              <div class="task-detail">Create a Claude orchestrator that has 3 tools defined: call_lead_qualifier, call_market_analyst, call_report_writer. Each tool triggers the corresponding n8n subflow via HTTP. Write a system prompt that tells the orchestrator: given a raw inquiry, decide which agents to call in what order to produce a complete investor brief.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">04</div>
+            <div>
+              <div class="task-title">Generate a PDF report and email it</div>
+              <div class="task-detail">Take the final report text, generate a basic HTML → PDF using a tool like Puppeteer (Node.js) or Make.com's HTML-to-PDF module. Email it to the prospect automatically via Gmail module in Make.com. Subject line generated by Claude based on the inquiry content.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <strong>Why multi-agent matters for your positioning:</strong> Single-prompt automations are commoditized. Multi-agent workflows that coordinate specialized models to produce complex, multi-step outputs are where consulting rates live — $3K–8K per deployment, not $500. Understanding the orchestrator-worker pattern puts you in a different conversation with clients than someone who builds simple chatbots.
+      </div>
+
+      <div>
+        <div class="stitle">Weekly schedule</div>
+        <div class="daygrid">
+          <div class="daycell"><div class="daylabel">Mon</div><div class="dayact">Read multi-agent docs + plan architecture</div><div class="daydur">2 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Wed–Thu</div><div class="dayact">Build 3 subflows + orchestrator</div><div class="daydur">4 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Weekend</div><div class="dayact">PDF generation + end-to-end test</div><div class="daydur">2 hrs</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WEEK 5 ── -->
+  <div class="week w5" id="wk4">
+    <div class="week-toggle" onclick="toggleWeek(this)">
+      <div class="wnum">05</div>
+      <div>
+        <div class="wtitle">RAG + Long-term Memory</div>
+        <div class="wsub">Supabase pgvector · Knowledge base · Context-aware agents</div>
+      </div>
+      <span class="wbadge">AI ENGINEERING</span>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="week-body">
+
+      <div>
+        <div class="stitle">What you build this week</div>
+        <div class="build-target">
+          <div class="bt-label">Project 5</div>
+          <div class="bt-name">Knowledge-Grounded Property Agent</div>
+          <div class="bt-desc">Upgrade your Week 3 WhatsApp agent with a RAG layer. Feed it a knowledge base: RERA regulations, community guides for Dubai Marina / JVC / Downtown, developer payment plan FAQs, DIFC visa rules. The agent now answers complex questions accurately from your knowledge base — not from LLM hallucination. You already built the RAG pipeline (your dev.to article). Now you integrate it into a live agent.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Stack</div>
+        <div class="stack">
+          <span class="tag primary">Supabase pgvector (you already know this)</span>
+          <span class="tag primary">Voyage-3 embeddings</span>
+          <span class="tag">Claude API (generation)</span>
+          <span class="tag">n8n (orchestration)</span>
+          <span class="tag">Markdown knowledge base files</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Build steps</div>
+        <div class="tasks">
+          <div class="task">
+            <div class="task-num">01</div>
+            <div>
+              <div class="task-title">Build the knowledge base (the real work)</div>
+              <div class="task-detail">Write or collect 15–20 markdown documents covering: RERA rental index rules, Ejari process, common community profiles (JVC, JBR, Downtown, Business Bay), off-plan buying process, Golden Visa via property, DLD transfer process, service charge ranges by community. This content is your product's defensible edge — not the code.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">02</div>
+            <div>
+              <div class="task-title">Ingest into Supabase — reuse your RAG pipeline</div>
+              <div class="task-detail">You already wrote the ingestion script in your dev.to article. Run it on your knowledge base files. Verify embeddings are stored. Test similarity search with 5 property-related queries. Aim for similarity scores above 0.78 on relevant chunks.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">03</div>
+            <div>
+              <div class="task-title">Add RAG retrieval step to n8n agent flow</div>
+              <div class="task-detail">Before calling Claude with a user question, add an n8n step: embed the question → run similarity search → retrieve top 3 chunks → inject into system prompt as context. The agent now answers from your knowledge, not from training data. Test with RERA-specific questions that would stump a general LLM.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">04</div>
+            <div>
+              <div class="task-title">Add a "knowledge gap" detection tool</div>
+              <div class="task-detail">If similarity scores are all below 0.65, the agent doesn't have relevant knowledge. Instead of hallucinating, it should say: "I don't have specific information on that — let me connect you with an agent who can help." Add this check as a conditional in n8n. Never let your agent make things up.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <strong>This week completes your technical stack.</strong> You can now build: agentic decision loops (Week 1), Make.com automations (Week 2), multi-turn WhatsApp agents (Week 3), multi-agent orchestration (Week 4), and RAG-grounded knowledge agents (Week 5). That's the full AI engineer toolkit for the GCC real estate market. Week 6 is all about turning this into income.
+      </div>
+
+      <div>
+        <div class="stitle">Weekly schedule</div>
+        <div class="daygrid">
+          <div class="daycell"><div class="daylabel">Mon</div><div class="dayact">Build knowledge base content</div><div class="daydur">3 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Wed</div><div class="dayact">Ingest + retrieval in n8n</div><div class="daydur">2 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Weekend</div><div class="dayact">Knowledge gap detection + full test</div><div class="daydur">2 hrs</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WEEK 6 ── -->
+  <div class="week w6" id="wk5">
+    <div class="week-toggle" onclick="toggleWeek(this)">
+      <div class="wnum">06</div>
+      <div>
+        <div class="wtitle">Package, Price &amp; Pitch</div>
+        <div class="wsub">Service packaging · Pricing model · 10 outreach targets · First invoice</div>
+      </div>
+      <span class="wbadge">GET PAID</span>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="week-body">
+
+      <div>
+        <div class="stitle">What you ship this week</div>
+        <div class="build-target">
+          <div class="bt-label">Not code — a business</div>
+          <div class="bt-name">AI Automation Service for UAE/Saudi Real Estate</div>
+          <div class="bt-desc">You have 5 working projects, a published RAG article, a live WhatsApp agent, and Make.com automations. This week you turn that into a productized service with a clear name, a fixed price, a one-page pitch, and 10 specific companies to contact in UAE and Saudi. Your goal: 2 discovery calls booked by end of week.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Service packages to offer</div>
+        <div class="income-box">
+          <div class="income-item">
+            <div class="income-label">Starter — Lead Qualifier Bot</div>
+            <div class="income-value">AED 4,500</div>
+            <div class="income-note">One-time setup + AED 750/mo retainer. Week 1+2 build. WhatsApp lead qualification → Google Sheets. 2-week delivery.</div>
+          </div>
+          <div class="income-item">
+            <div class="income-label">Growth — Full WhatsApp Agent</div>
+            <div class="income-value">AED 9,500</div>
+            <div class="income-note">One-time + AED 1,500/mo. Week 3+5 build. Multi-turn, Arabic/English, RAG knowledge base, human escalation.</div>
+          </div>
+          <div class="income-item">
+            <div class="income-label">Scale — Multi-Agent System</div>
+            <div class="income-value">AED 18,000</div>
+            <div class="income-note">One-time + AED 2,500/mo. Full orchestrator + 3 specialists + PDF reports + CRM integration. 4-week delivery.</div>
+          </div>
+          <div class="income-item">
+            <div class="income-label">Retainer — Ongoing AI Partner</div>
+            <div class="income-value">AED 5,000/mo</div>
+            <div class="income-note">Monthly. New workflows, maintenance, prompt tuning, new agent builds. 2 clients = your $3K/mo target.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="stitle">Outreach this week</div>
+        <div class="tasks">
+          <div class="task">
+            <div class="task-num">01</div>
+            <div>
+              <div class="task-title">Build your one-page pitch asset</div>
+              <div class="task-detail">A simple PDF or Notion page: "AI Automation for Real Estate — Dubai & Saudi." Include your Loom demo from Week 2, 3 bullet points on what it solves, the 3 packages with prices, and a "Book a 20-min call" link. No long proposal — one page, demo link, price, call link.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">02</div>
+            <div>
+              <div class="task-title">Identify 10 target companies</div>
+              <div class="task-detail">On LinkedIn: search "real estate director Dubai", "head of sales property UAE", "brokerage owner Dubai". On Bayut/Property Finder: note the top-advertised agencies. Look for agencies with 10–50 agents — big enough to feel the pain, small enough to make quick decisions. Write down company name, decision-maker name, LinkedIn URL, and one specific pain point you can address.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">03</div>
+            <div>
+              <div class="task-title">Send 10 personalised LinkedIn DMs</div>
+              <div class="task-detail">Formula: one sentence about their specific situation → one sentence about what you built → demo link → one ask. Example: "I noticed [Agency] is advertising heavily on Property Finder — I built an AI agent that qualifies those leads on WhatsApp 24/7 in Arabic and English and pushes them to your CRM automatically. Here's a 3-min demo. Worth a quick call?" Send all 10. Expect 2–3 replies.</div>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-num">04</div>
+            <div>
+              <div class="task-title">Publish your second dev.to article</div>
+              <div class="task-detail">Title: "Building a WhatsApp AI Agent for Real Estate with Claude API and n8n." This is your credibility signal for the technical buyers and your DevRel content simultaneously. Tag Anthropic and n8n. It also ranks on Google for "WhatsApp AI agent real estate UAE" — inbound in 30 days.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="deliverable-final">
+        <h3>What you have at the end of 6 weeks</h3>
+        <p>You didn't study AI engineering — you did it. Here's your actual output:</p>
+        <ul>
+          <li>5 working AI systems: lead qualifier, Make.com pipeline, WhatsApp agent, multi-agent orchestrator, RAG-grounded knowledge agent</li>
+          <li>2 published technical articles on dev.to establishing AI engineering credibility</li>
+          <li>A productized service with 4 pricing tiers and a Loom demo</li>
+          <li>10 warm outreach conversations started in UAE/Saudi real estate</li>
+          <li>Full stack mastery: Claude API tool use, Make.com, n8n, WhatsApp Business API, Supabase RAG — the exact intersection the GCC market is paying for right now</li>
+          <li>Everything needed to hit your $1–3K/mo retainer target in the next 30 days after this plan ends</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="stitle">Weekly schedule</div>
+        <div class="daygrid">
+          <div class="daycell"><div class="daylabel">Mon–Tue</div><div class="dayact">One-page pitch + identify 10 targets</div><div class="daydur">3 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Wed–Thu</div><div class="dayact">Send 10 DMs + write article draft</div><div class="daydur">3 hrs</div></div>
+          <div class="daycell"><div class="daylabel">Fri–Weekend</div><div class="dayact">Publish article + follow up + calls</div><div class="daydur">2 hrs</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end weeks -->
+
+</div><!-- end container -->
+
+<script>
+function toggleWeek(header) {
+  const card = header.closest('.week');
+  card.classList.toggle('open');
+}
+
+function openWeek(index) {
+  const cards = document.querySelectorAll('.week');
+  if (cards[index]) {
+    cards[index].classList.add('open');
+    setTimeout(() => cards[index].scrollIntoView({ behavior:'smooth', block:'start' }), 50);
+  }
+}
+
+// Open week 1 on load
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.week').classList.add('open');
+});
+</script>
+</body>
+</html>

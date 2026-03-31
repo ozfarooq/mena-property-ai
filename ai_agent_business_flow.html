@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Business Flow — Dubai Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c10;
+  --surface: #0e1318;
+  --surface2: #141c24;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --teal: #00d4aa;
+  --teal-dim: rgba(0,212,170,0.12);
+  --teal-mid: rgba(0,212,170,0.35);
+  --amber: #f5a623;
+  --amber-dim: rgba(245,166,35,0.1);
+  --blue: #4a9eff;
+  --blue-dim: rgba(74,158,255,0.1);
+  --purple: #b088f9;
+  --purple-dim: rgba(176,136,249,0.1);
+  --coral: #ff6b6b;
+  --coral-dim: rgba(255,107,107,0.1);
+  --green: #4ade80;
+  --green-dim: rgba(74,222,128,0.1);
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grid pattern */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,170,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,170,0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events:none;
+  z-index:0;
+}
+
+.page { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:48px 24px 100px; }
+
+/* ── HEADER ── */
+.header {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  margin-bottom:56px; padding-bottom:32px;
+  border-bottom:1px solid var(--border);
+  animation: fadeIn 0.6s ease both;
+}
+
+.header-left {}
+
+.sys-tag {
+  font-family:var(--mono); font-size:10px; letter-spacing:0.14em;
+  color:var(--teal); border:1px solid rgba(0,212,170,0.3);
+  padding:4px 10px; border-radius:2px; display:inline-block; margin-bottom:16px;
+}
+
+.sys-tag::before { content:'> '; opacity:0.5; }
+
+h1 {
+  font-family:var(--mono); font-size:clamp(22px,4vw,36px);
+  font-weight:600; line-height:1.1; letter-spacing:-0.02em;
+  color:var(--text); margin-bottom:10px;
+}
+
+h1 span { color:var(--teal); }
+
+.header-sub { font-size:13px; color:var(--text2); line-height:1.6; max-width:500px; }
+
+.header-stats {
+  display:flex; flex-direction:column; gap:10px; align-items:flex-end;
+}
+
+.stat-badge {
+  font-family:var(--mono); font-size:11px;
+  padding:6px 14px; border-radius:2px;
+  border:1px solid; white-space:nowrap;
+}
+.stat-badge.teal { color:var(--teal); border-color:rgba(0,212,170,0.3); background:var(--teal-dim); }
+.stat-badge.amber { color:var(--amber); border-color:rgba(245,166,35,0.3); background:var(--amber-dim); }
+.stat-badge.green { color:var(--green); border-color:rgba(74,222,128,0.3); background:var(--green-dim); }
+
+/* ── SECTION TITLES ── */
+.section-title {
+  font-family:var(--mono); font-size:10px; letter-spacing:0.16em;
+  text-transform:uppercase; color:var(--text3);
+  margin-bottom:20px; display:flex; align-items:center; gap:10px;
+}
+.section-title::before { content:''; display:block; width:20px; height:1px; background:var(--text3); }
+.section-title::after { content:''; display:block; flex:1; height:1px; background:var(--border); }
+
+/* ── SCENARIO BANNER ── */
+.scenario {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-left:3px solid var(--teal);
+  border-radius:0 6px 6px 0;
+  padding:20px 24px;
+  margin-bottom:48px;
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:24px;
+  animation: fadeIn 0.6s 0.1s ease both;
+}
+
+.scenario-item {}
+.scenario-label { font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); margin-bottom:6px; }
+.scenario-value { font-size:13px; color:var(--text); font-weight:500; margin-bottom:3px; }
+.scenario-detail { font-size:11px; color:var(--text2); line-height:1.5; }
+
+/* ── SWIMLANE FLOW ── */
+.swimlane-section { margin-bottom:60px; animation: fadeIn 0.6s 0.15s ease both; }
+
+.swimlane-header {
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:2px; margin-bottom:2px;
+}
+
+.lane-label {
+  font-family:var(--mono); font-size:10px; letter-spacing:0.1em;
+  text-transform:uppercase; text-align:center; padding:8px;
+  border-radius:4px 4px 0 0;
+}
+
+.lane-investor { background:rgba(74,158,255,0.08); color:var(--blue); border:1px solid rgba(74,158,255,0.15); border-bottom:none; }
+.lane-ai { background:var(--teal-dim); color:var(--teal); border:1px solid rgba(0,212,170,0.2); border-bottom:none; }
+.lane-broker { background:rgba(245,166,35,0.08); color:var(--amber); border:1px solid rgba(245,166,35,0.15); border-bottom:none; }
+
+.swimlane-body {
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:2px;
+  border:1px solid var(--border);
+  border-radius:0 0 8px 8px;
+  overflow:hidden;
+  background:var(--border);
+}
+
+.lane-col {
+  background:var(--surface);
+  padding:16px 12px;
+  display:flex; flex-direction:column; gap:10px;
+  min-height:420px;
+}
+
+.flow-step {
+  border:1px solid var(--border2);
+  border-radius:6px;
+  padding:12px 14px;
+  cursor:pointer;
+  transition:border-color 0.15s, background 0.15s;
+  position:relative;
+}
+
+.flow-step:hover { border-color:var(--border2); background:var(--surface2); }
+.flow-step.active { border-color:var(--teal) !important; background:var(--teal-dim) !important; }
+.flow-step.investor-step { border-color:rgba(74,158,255,0.2); }
+.flow-step.investor-step.active { border-color:var(--blue) !important; background:var(--blue-dim) !important; }
+.flow-step.broker-step { border-color:rgba(245,166,35,0.2); }
+.flow-step.broker-step.active { border-color:var(--amber) !important; background:var(--amber-dim) !important; }
+
+.step-num {
+  font-family:var(--mono); font-size:9px; letter-spacing:0.1em;
+  color:var(--text3); margin-bottom:5px;
+}
+
+.step-title { font-size:12px; font-weight:500; color:var(--text); margin-bottom:4px; line-height:1.35; }
+.step-detail { font-size:11px; color:var(--text2); line-height:1.5; }
+
+.step-tag {
+  display:inline-block; margin-top:7px;
+  font-family:var(--mono); font-size:9px; letter-spacing:0.06em;
+  padding:2px 7px; border-radius:2px;
+}
+
+.tag-teal { background:var(--teal-dim); color:var(--teal); border:1px solid rgba(0,212,170,0.25); }
+.tag-blue { background:var(--blue-dim); color:var(--blue); border:1px solid rgba(74,158,255,0.25); }
+.tag-purple { background:var(--purple-dim); color:var(--purple); border:1px solid rgba(176,136,249,0.25); }
+.tag-amber { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(245,166,35,0.25); }
+
+/* Time marker */
+.time-marker {
+  text-align:center; padding:8px;
+  font-family:var(--mono); font-size:9px; letter-spacing:0.1em;
+  color:var(--teal); border-top:1px solid var(--border);
+  margin-top:auto;
+}
+
+/* ── DETAIL PANEL ── */
+.detail-panel {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  margin-bottom:48px;
+  overflow:hidden;
+  animation: fadeIn 0.6s 0.2s ease both;
+}
+
+.panel-header {
+  background:var(--surface2);
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
+}
+
+.panel-dot { width:8px; height:8px; border-radius:50%; }
+.dot-teal { background:var(--teal); }
+.dot-amber { background:var(--amber); }
+.dot-purple { background:var(--purple); }
+
+.panel-title { font-family:var(--mono); font-size:11px; letter-spacing:0.08em; color:var(--text2); }
+
+.panel-body { padding:20px; }
+
+/* Message mockup */
+.whatsapp-thread {
+  display:flex; flex-direction:column; gap:10px; margin-bottom:16px;
+}
+
+.msg {
+  max-width:75%; padding:10px 14px; border-radius:8px;
+  font-size:12px; line-height:1.6;
+}
+.msg-in { background:var(--surface2); border:1px solid var(--border); align-self:flex-start; color:var(--text); }
+.msg-out { background:rgba(0,212,170,0.1); border:1px solid rgba(0,212,170,0.2); align-self:flex-end; color:var(--teal); }
+.msg-time { font-family:var(--mono); font-size:9px; color:var(--text3); margin-top:3px; }
+.msg-sender { font-family:var(--mono); font-size:9px; color:var(--text3); margin-bottom:3px; }
+
+/* Code block */
+.code-block {
+  background:#050709; border:1px solid var(--border);
+  border-radius:6px; padding:16px;
+  font-family:var(--mono); font-size:11px; line-height:1.8;
+  overflow-x:auto; margin-bottom:12px;
+  white-space:pre;
+}
+
+.code-key { color:var(--blue); }
+.code-val { color:var(--teal); }
+.code-str { color:var(--amber); }
+.code-num { color:var(--purple); }
+.code-comment { color:var(--text3); }
+
+/* Tool call display */
+.tool-call {
+  border:1px solid rgba(176,136,249,0.25); border-radius:6px;
+  overflow:hidden; margin-bottom:12px;
+}
+
+.tool-header {
+  background:rgba(176,136,249,0.08); padding:8px 14px;
+  font-family:var(--mono); font-size:10px; letter-spacing:0.08em;
+  color:var(--purple); display:flex; gap:12px; align-items:center;
+}
+
+.tool-header-name { color:var(--text); }
+.tool-body { padding:12px 14px; font-size:11px; color:var(--text2); line-height:1.6; }
+
+/* Parallel steps */
+.parallel-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px; }
+
+.parallel-item {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:6px; padding:12px;
+}
+.parallel-num { font-family:var(--mono); font-size:9px; color:var(--text3); margin-bottom:6px; }
+.parallel-title { font-size:12px; font-weight:500; color:var(--text); margin-bottom:4px; }
+.parallel-detail { font-size:11px; color:var(--text2); line-height:1.5; }
+
+/* ── MONEY FLOW ── */
+.money-section { margin-bottom:60px; animation: fadeIn 0.6s 0.25s ease both; }
+
+.tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
+
+.tier-card {
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:8px; padding:20px; position:relative; overflow:hidden;
+}
+
+.tier-card.featured { border-color:rgba(0,212,170,0.4); }
+.tier-card.featured::before {
+  content:'RECOMMENDED';
+  position:absolute; top:10px; right:-20px;
+  background:var(--teal); color:var(--bg);
+  font-family:var(--mono); font-size:8px; letter-spacing:0.1em;
+  padding:3px 28px; transform:rotate(45deg);
+}
+
+.tier-name { font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); margin-bottom:8px; }
+.tier-price { font-family:var(--mono); font-size:26px; font-weight:600; color:var(--text); margin-bottom:2px; }
+.tier-retainer { font-family:var(--mono); font-size:11px; color:var(--teal); margin-bottom:12px; }
+.tier-divider { height:1px; background:var(--border); margin-bottom:12px; }
+.tier-features { list-style:none; display:flex; flex-direction:column; gap:6px; }
+.tier-features li { font-size:11px; color:var(--text2); line-height:1.4; display:flex; gap:6px; }
+.tier-features li::before { content:'→'; color:var(--text3); flex-shrink:0; font-family:var(--mono); font-size:11px; }
+
+/* Revenue timeline */
+.rev-timeline { display:flex; flex-direction:column; gap:0; }
+
+.rev-row {
+  display:grid; grid-template-columns:90px 20px 1fr 140px;
+  align-items:stretch; gap:0;
+  border-bottom:1px solid var(--border);
+}
+.rev-row:last-child { border-bottom:none; }
+.rev-row:hover { background:rgba(255,255,255,0.01); }
+
+.rev-week {
+  font-family:var(--mono); font-size:10px; color:var(--text3);
+  padding:14px 12px; border-right:1px solid var(--border);
+  display:flex; align-items:flex-start; padding-top:16px;
+}
+
+.rev-dot-col {
+  display:flex; flex-direction:column; align-items:center;
+  padding:16px 0;
+}
+
+.rev-dot { width:10px; height:10px; border-radius:50%; border:1px solid var(--border2); background:var(--surface2); flex-shrink:0; }
+.rev-dot.on { background:var(--teal); border-color:var(--teal); }
+.rev-dot.money { background:var(--green); border-color:var(--green); }
+.rev-line { flex:1; width:1px; background:var(--border); }
+
+.rev-content { padding:14px 16px; }
+.rev-title { font-size:13px; font-weight:500; color:var(--text); margin-bottom:3px; }
+.rev-detail { font-size:11px; color:var(--text2); line-height:1.55; }
+
+.rev-amount {
+  padding:14px 0; text-align:right; padding-right:4px;
+  font-family:var(--mono); font-size:12px;
+  display:flex; align-items:flex-start; justify-content:flex-end; padding-top:16px;
+}
+.rev-amount.income { color:var(--green); }
+.rev-amount.building { color:var(--text3); }
+
+/* Pitch box */
+.pitch-box {
+  background:var(--surface); border:1px solid var(--border2);
+  border-left:3px solid var(--amber);
+  border-radius:0 8px 8px 0; padding:20px 24px; margin-bottom:32px;
+}
+
+.pitch-label { font-family:var(--mono); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:10px; }
+.pitch-text { font-size:13px; color:var(--text); line-height:1.75; font-style:italic; }
+
+/* Summary totals */
+.totals-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+
+.total-card {
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:8px; padding:16px;
+}
+.total-label { font-family:var(--mono); font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); margin-bottom:8px; }
+.total-value { font-family:var(--mono); font-size:22px; font-weight:600; color:var(--text); }
+.total-note { font-size:11px; color:var(--text2); margin-top:5px; line-height:1.4; }
+.total-card.highlight { border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.05); }
+.total-card.highlight .total-value { color:var(--green); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(12px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:0.4; }
+}
+
+.pulse { animation: pulse 2.5s infinite; }
+
+/* Tab system for panels */
+.tabs { display:flex; gap:2px; margin-bottom:0; }
+.tab {
+  font-family:var(--mono); font-size:10px; letter-spacing:0.08em;
+  padding:8px 16px; cursor:pointer; border:1px solid var(--border);
+  background:transparent; color:var(--text3); border-radius:4px 4px 0 0;
+  border-bottom:none; transition:all 0.15s;
+}
+.tab.active { background:var(--surface); color:var(--text); border-color:var(--border2); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* Responsive */
+@media (max-width: 680px) {
+  .swimlane-header, .swimlane-body { grid-template-columns:1fr; }
+  .parallel-grid { grid-template-columns:1fr; }
+  .tier-grid { grid-template-columns:1fr; }
+  .totals-grid { grid-template-columns:1fr 1fr; }
+  .scenario { grid-template-columns:1fr; gap:14px; }
+  .header { flex-direction:column; gap:16px; }
+  .header-stats { align-items:flex-start; }
+  .rev-row { grid-template-columns:70px 20px 1fr; }
+  .rev-amount { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-left">
+    <div class="sys-tag">AI Agent System — Dubai Real Estate</div>
+    <h1>Inquiry to <span>Qualified Lead</span><br>in 8 Seconds</h1>
+    <p class="header-sub">Complete business flow: WhatsApp message → Claude API → CRM → broker notification → retainer income. Real scenario, real data.</p>
+  </div>
+  <div class="header-stats">
+    <div class="stat-badge teal pulse">● SYSTEM ACTIVE 24/7</div>
+    <div class="stat-badge amber">5 LANGUAGES SUPPORTED</div>
+    <div class="stat-badge green">AED 1,500–5,000/mo RETAINER</div>
+  </div>
+</div>
+
+<!-- ── SCENARIO ── -->
+<div class="section-title">Real scenario</div>
+<div class="scenario">
+  <div class="scenario-item">
+    <div class="scenario-label">The investor</div>
+    <div class="scenario-value">Fatima Al Zahra</div>
+    <div class="scenario-detail">Based in London. Overseas investor. Sends a WhatsApp inquiry at 11:04pm Dubai time. No broker is awake.</div>
+  </div>
+  <div class="scenario-item">
+    <div class="scenario-label">The client (your customer)</div>
+    <div class="scenario-value">Platinum Key Real Estate</div>
+    <div class="scenario-detail">Dubai brokerage. 18 agents. Active on Property Finder &amp; Bayut. Losing 30% of leads to slow response. Pays you AED 9,500 setup + AED 1,500/mo.</div>
+  </div>
+  <div class="scenario-item">
+    <div class="scenario-label">The message</div>
+    <div class="scenario-value">"Hi, 2BR Dubai Marina, budget 2M, invest not live"</div>
+    <div class="scenario-detail">Sent via WhatsApp. Incomplete — no timeline, no financing status. The agent decides what to do next.</div>
+  </div>
+</div>
+
+<!-- ── SWIMLANE ── -->
+<div class="section-title">Business flow — 3 actors, 8 seconds</div>
+<div class="swimlane-section">
+  <div class="swimlane-header">
+    <div class="lane-label lane-investor">Fatima (investor)</div>
+    <div class="lane-label lane-ai">Your AI system (n8n + Claude)</div>
+    <div class="lane-label lane-broker">Platinum Key broker</div>
+  </div>
+  <div class="swimlane-body">
+
+    <div class="lane-col">
+      <div class="flow-step investor-step" onclick="showDetail('msg')">
+        <div class="step-num">01 · 23:04</div>
+        <div class="step-title">Sends WhatsApp message</div>
+        <div class="step-detail">"Hi, 2BR Dubai Marina, budget 2M, invest not live"</div>
+        <span class="step-tag tag-blue">+447911 123456</span>
+      </div>
+
+      <div class="flow-step investor-step" onclick="showDetail('clarify')" style="opacity:0.5; border-style:dashed;">
+        <div class="step-num">ALT · if vague</div>
+        <div class="step-title">Receives clarification question</div>
+        <div class="step-detail">"What is your approximate budget?" — agent asks before qualifying</div>
+        <span class="step-tag tag-blue">decision branch</span>
+      </div>
+
+      <div class="flow-step investor-step" onclick="showDetail('reply')">
+        <div class="step-num">06 · 23:04</div>
+        <div class="step-title">Receives warm reply</div>
+        <div class="step-detail">Personalised message in English, mentions Marina listings, books viewing slot</div>
+        <span class="step-tag tag-teal">auto-generated by Claude</span>
+      </div>
+
+      <div class="flow-step investor-step" onclick="showDetail('confirm')">
+        <div class="step-num">07 · 23:05</div>
+        <div class="step-title">Viewing confirmed</div>
+        <div class="step-detail">Gets agent name, time, address for next morning viewing in Dubai Marina</div>
+        <span class="step-tag tag-blue">calendar invite sent</span>
+      </div>
+
+      <div class="time-marker">Total time from message → confirmed viewing: 61 seconds</div>
+    </div>
+
+    <div class="lane-col">
+      <div class="flow-step" onclick="showDetail('webhook')">
+        <div class="step-num">01 · INSTANT</div>
+        <div class="step-title">n8n webhook fires</div>
+        <div class="step-detail">WhatsApp Cloud API sends POST to n8n. Extracts: message body, phone number, timestamp, message ID.</div>
+        <span class="step-tag tag-teal">n8n · WhatsApp API</span>
+      </div>
+
+      <div class="flow-step" onclick="showDetail('memory')">
+        <div class="step-num">02 · ~200ms</div>
+        <div class="step-title">Load conversation history</div>
+        <div class="step-detail">Supabase query by phone number. First contact = empty array. Returning lead = prior messages injected into context.</div>
+        <span class="step-tag tag-teal">Supabase SELECT</span>
+      </div>
+
+      <div class="flow-step" onclick="showDetail('rag')">
+        <div class="step-num">03 · ~800ms</div>
+        <div class="step-title">RAG retrieval</div>
+        <div class="step-detail">Query embedded via Voyage-3. match_documents RPC returns top 3 chunks: Marina community guide, off-plan rules, RERA rental yields.</div>
+        <span class="step-tag tag-purple">Supabase pgvector</span>
+      </div>
+
+      <div class="flow-step active" onclick="showDetail('claude')">
+        <div class="step-num">04 · ~3s</div>
+        <div class="step-title">Claude API call — tool use</div>
+        <div class="step-detail">System prompt + history + RAG chunks + user message. Claude decides: call extract_lead (info is sufficient). Returns structured JSON.</div>
+        <span class="step-tag tag-purple">claude-sonnet-4-6</span>
+      </div>
+
+      <div class="flow-step" onclick="showDetail('outputs')">
+        <div class="step-num">05 · ~4s</div>
+        <div class="step-title">3 parallel outputs fire</div>
+        <div class="step-detail">CRM push to Google Sheets + personalised WhatsApp reply generated + broker notification assembled. All triggered simultaneously.</div>
+        <span class="step-tag tag-teal">Make.com + n8n</span>
+      </div>
+
+      <div class="flow-step" onclick="showDetail('save')">
+        <div class="step-num">06 · ~200ms</div>
+        <div class="step-title">Save updated history</div>
+        <div class="step-detail">Appends user message + assistant response to conversation history. Next interaction picks up exactly where this ended.</div>
+        <span class="step-tag tag-teal">Supabase UPSERT</span>
+      </div>
+
+      <div class="time-marker">8 seconds total · Zero human involvement</div>
+    </div>
+
+    <div class="lane-col">
+      <div class="flow-step broker-step" style="opacity:0.3; border-style:dashed;">
+        <div class="step-num">SLEEPING</div>
+        <div class="step-title">23:04 — not available</div>
+        <div class="step-detail">Without the agent, Fatima gets no reply. By morning she has messaged 3 other agencies. Platinum Key loses the lead.</div>
+        <span class="step-tag tag-amber">without AI agent</span>
+      </div>
+
+      <div class="flow-step broker-step" onclick="showDetail('crm')">
+        <div class="step-num">05a · 23:04</div>
+        <div class="step-title">CRM row appears</div>
+        <div class="step-detail">Google Sheets: name (if given), intent: invest, budget: 2,000,000, location: Dubai Marina, type: 2BR, score: HIGH, timestamp, raw message.</div>
+        <span class="step-tag tag-amber">Google Sheets / PropSpace</span>
+      </div>
+
+      <div class="flow-step broker-step" onclick="showDetail('notif')">
+        <div class="step-num">05b · 23:04</div>
+        <div class="step-title">WhatsApp alert received</div>
+        <div class="step-detail">Broker gets: "HIGH LEAD — Marina investor, AED 2M budget, viewing requested. Respond by 9am." Wakes up to a hot lead, not a cold inquiry.</div>
+        <span class="step-tag tag-amber">WhatsApp Business</span>
+      </div>
+
+      <div class="flow-step broker-step" onclick="showDetail('viewing')">
+        <div class="step-num">07 · 09:00</div>
+        <div class="step-title">Shows up to viewing</div>
+        <div class="step-detail">Fatima already qualified, briefed, and committed to a viewing. Broker's job starts at hello — not at "what's your budget?"</div>
+        <span class="step-tag tag-amber">broker focus: close</span>
+      </div>
+
+      <div class="time-marker">Broker wakes up to a qualified lead + booked viewing</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── DETAIL PANEL ── -->
+<div class="section-title">Step detail — click any step above</div>
+<div class="detail-panel" id="detail-panel">
+  <div class="panel-header">
+    <div class="panel-dot dot-teal"></div>
+    <div class="panel-title" id="panel-title">SELECT A STEP TO SEE DETAILS</div>
+  </div>
+  <div class="panel-body" id="panel-body">
+    <p style="font-size:13px; color:var(--text2); line-height:1.6;">Click any step in the flow above to see the exact message, code, or data at that point in the pipeline.</p>
+  </div>
+</div>
+
+<!-- ── MONEY FLOW ── -->
+<div class="section-title">Revenue model — how you get paid</div>
+<div class="money-section">
+
+  <div class="tier-grid">
+    <div class="tier-card">
+      <div class="tier-name">Starter</div>
+      <div class="tier-price">AED 4,500</div>
+      <div class="tier-retainer">+ AED 750/mo</div>
+      <div class="tier-divider"></div>
+      <ul class="tier-features">
+        <li>Lead qualifier agent (Week 1 build)</li>
+        <li>Make.com pipeline</li>
+        <li>Google Sheets CRM push</li>
+        <li>WhatsApp auto-reply</li>
+        <li>2-week delivery</li>
+      </ul>
+    </div>
+
+    <div class="tier-card featured">
+      <div class="tier-name">Growth</div>
+      <div class="tier-price">AED 9,500</div>
+      <div class="tier-retainer">+ AED 1,500/mo</div>
+      <div class="tier-divider"></div>
+      <ul class="tier-features">
+        <li>Full WhatsApp conversational agent</li>
+        <li>Multi-turn memory (Supabase)</li>
+        <li>Arabic + English detection</li>
+        <li>RAG knowledge base (RERA, communities)</li>
+        <li>Human escalation routing</li>
+        <li>Broker WhatsApp notifications</li>
+      </ul>
+    </div>
+
+    <div class="tier-card">
+      <div class="tier-name">Scale</div>
+      <div class="tier-price">AED 18,000</div>
+      <div class="tier-retainer">+ AED 2,500/mo</div>
+      <div class="tier-divider"></div>
+      <ul class="tier-features">
+        <li>Multi-agent orchestrator</li>
+        <li>Market analyst + report writer agents</li>
+        <li>Automated PDF investor briefs</li>
+        <li>Off-plan project comparison</li>
+        <li>Full CRM integration (PropSpace)</li>
+        <li>4-week delivery</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="pitch-box">
+    <div class="pitch-label">LinkedIn DM that gets replies — send this verbatim</div>
+    <div class="pitch-text">"I noticed [Agency] advertises heavily on Property Finder — I built an AI agent that qualifies those leads on WhatsApp 24/7 in Arabic and English, scores them, and pushes to your CRM automatically. No lead lost to a slow reply again. Here's a 3-min demo running live: [loom link]. Worth a 20-min call this week?"</div>
+  </div>
+
+  <div class="rev-timeline">
+    <div class="rev-row">
+      <div class="rev-week">WK 1–2</div>
+      <div class="rev-dot-col"><div class="rev-dot"></div><div class="rev-line"></div></div>
+      <div class="rev-content">
+        <div class="rev-title">Build + first demo asset</div>
+        <div class="rev-detail">Working lead qualifier → Make.com pipeline → Loom demo recorded. Post on LinkedIn. This is your sales asset — not income yet.</div>
+      </div>
+      <div class="rev-amount building">building</div>
+    </div>
+    <div class="rev-row">
+      <div class="rev-week">WK 3–4</div>
+      <div class="rev-dot-col"><div class="rev-dot"></div><div class="rev-line"></div></div>
+      <div class="rev-content">
+        <div class="rev-title">WhatsApp agent live + article published</div>
+        <div class="rev-detail">Multi-turn Arabic/English agent running. Dev.to article: "Building a WhatsApp AI Agent for Real Estate." Start getting inbound interest from LinkedIn.</div>
+      </div>
+      <div class="rev-amount building">credibility</div>
+    </div>
+    <div class="rev-row">
+      <div class="rev-week">WK 5–6</div>
+      <div class="rev-dot-col"><div class="rev-dot"></div><div class="rev-line"></div></div>
+      <div class="rev-content">
+        <div class="rev-title">RAG complete + 10 DMs sent</div>
+        <div class="rev-detail">Full stack done. Send 10 personalised DMs to Dubai brokerage owners. Book 2–3 discovery calls. Prepare one-page pitch PDF with Loom link and pricing.</div>
+      </div>
+      <div class="rev-amount building">outreach</div>
+    </div>
+    <div class="rev-row">
+      <div class="rev-week">WK 7–8</div>
+      <div class="rev-dot-col"><div class="rev-dot on"></div><div class="rev-line"></div></div>
+      <div class="rev-content">
+        <div class="rev-title">First invoice — Client 1</div>
+        <div class="rev-detail">20-min demo call with Platinum Key. Live demo on their test WhatsApp number. Close on Growth tier. Invoice AED 9,500 setup + AED 1,500/mo retainer. Deliver in 2 weeks.</div>
+      </div>
+      <div class="rev-amount income">AED 9,500</div>
+    </div>
+    <div class="rev-row">
+      <div class="rev-week">WK 9–10</div>
+      <div class="rev-dot-col"><div class="rev-dot money"></div><div class="rev-line"></div></div>
+      <div class="rev-content">
+        <div class="rev-title">Client 2 closes + recurring begins</div>
+        <div class="rev-detail">Client 1 live and happy = first referral. Client 2 closes on Starter tier. AED 1,500 + AED 750 = AED 2,250/mo recurring. $613/mo from 2 clients.</div>
+      </div>
+      <div class="rev-amount income">AED 4,500 + recurring</div>
+    </div>
+    <div class="rev-row">
+      <div class="rev-week">WK 11+</div>
+      <div class="rev-dot-col"><div class="rev-dot money"></div></div>
+      <div class="rev-content">
+        <div class="rev-title">Scale: Saudi market + higher tiers</div>
+        <div class="rev-detail">Each new client is 80% reuse of existing code. One Scale-tier Saudi client (AED 18,000 + AED 2,500/mo) crosses your $3K/mo target alone. Target 4 retainer clients by month 4.</div>
+      </div>
+      <div class="rev-amount income">$3,000+/mo</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── TOTALS ── -->
+<div class="section-title">60-day revenue scenario</div>
+<div class="totals-grid">
+  <div class="total-card">
+    <div class="total-label">Setup fees (2 clients)</div>
+    <div class="total-value">AED 14,000</div>
+    <div class="total-note">Starter + Growth tier. One-time. ~$3,810 USD.</div>
+  </div>
+  <div class="total-card">
+    <div class="total-label">Monthly retainer (from mo 2)</div>
+    <div class="total-value">AED 2,250</div>
+    <div class="total-note">AED 1,500 + AED 750. Recurring. ~$613/mo USD.</div>
+  </div>
+  <div class="total-card">
+    <div class="total-label">Add 1 Scale client (Saudi)</div>
+    <div class="total-value">+ AED 2,500</div>
+    <div class="total-note">AED 2,500/mo retainer. Crosses $3K/mo target.</div>
+  </div>
+  <div class="total-card highlight">
+    <div class="total-label">Target: 4 retainer clients</div>
+    <div class="total-value">$3,200/mo</div>
+    <div class="total-note">Realistic by month 3–4. Each new client = 80% reuse of existing code.</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const details = {
+  msg: {
+    title: "01 · WHATSAPP MESSAGE — RAW PAYLOAD",
+    html: `
+      <div style="margin-bottom:14px;">
+        <p style="font-size:12px;color:var(--text2);margin-bottom:10px;">This is the actual JSON that arrives at the n8n webhook from WhatsApp Cloud API:</p>
+        <div class="code-block"><span class="code-key">{</span>
+  <span class="code-key">"object"</span>: <span class="code-str">"whatsapp_business_account"</span>,
+  <span class="code-key">"entry"</span>: [{
+    <span class="code-key">"changes"</span>: [{
+      <span class="code-key">"value"</span>: {
+        <span class="code-key">"messages"</span>: [{
+          <span class="code-key">"from"</span>: <span class="code-str">"447911123456"</span>,
+          <span class="code-key">"timestamp"</span>: <span class="code-str">"1703375040"</span>,
+          <span class="code-key">"type"</span>: <span class="code-str">"text"</span>,
+          <span class="code-key">"text"</span>: {
+            <span class="code-key">"body"</span>: <span class="code-str">"Hi, 2BR Dubai Marina, budget 2M, invest not live"</span>
+          }
+        }]
+      }
+    }]
+  }]
+<span class="code-key">}</span></div>
+        <p style="font-size:11px;color:var(--text3);">n8n extracts: from (phone number used as session key), text.body (message content), timestamp. This triggers the full pipeline.</p>
+      </div>`
+  },
+  webhook: {
+    title: "01 · N8N WEBHOOK — TRIGGER NODE",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">The n8n webhook node listens for POST requests from WhatsApp Cloud API. Meta sends a GET first to verify the endpoint — n8n handles this automatically with the challenge parameter.</p>
+      <div class="parallel-grid">
+        <div class="parallel-item">
+          <div class="parallel-num">EXTRACT</div>
+          <div class="parallel-title">Phone number</div>
+          <div class="parallel-detail">Used as the session key for conversation memory lookup</div>
+        </div>
+        <div class="parallel-item">
+          <div class="parallel-num">EXTRACT</div>
+          <div class="parallel-title">Message body</div>
+          <div class="parallel-detail">Raw text. Could be Arabic, English, or mixed — Claude handles both</div>
+        </div>
+        <div class="parallel-item">
+          <div class="parallel-num">EXTRACT</div>
+          <div class="parallel-title">Message ID</div>
+          <div class="parallel-detail">Used to send WhatsApp reply — required by the Cloud API send endpoint</div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:8px;">n8n node type: Webhook. Method: POST. Authentication: none (Meta verifies via challenge). Response: 200 OK immediately — processing happens async.</p>`
+  },
+  memory: {
+    title: "02 · CONVERSATION MEMORY — SUPABASE QUERY",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">Multi-turn memory is what separates a proper agent from a dumb chatbot. Every conversation is stored and retrieved by phone number.</p>
+      <div class="code-block"><span class="code-comment">-- Supabase table: conversations</span>
+<span class="code-key">CREATE TABLE</span> conversations (
+  phone_number  <span class="code-val">TEXT PRIMARY KEY</span>,
+  messages      <span class="code-val">JSONB</span>,  <span class="code-comment">-- array of {role, content}</span>
+  updated_at    <span class="code-val">TIMESTAMPTZ</span>
+);
+
+<span class="code-comment">-- n8n Supabase node: SELECT</span>
+<span class="code-key">SELECT</span> messages <span class="code-key">FROM</span> conversations
+<span class="code-key">WHERE</span> phone_number = <span class="code-str">'447911123456'</span>;</div>
+      <p style="font-size:11px;color:var(--text3);">First contact: returns null → messages array = []. Returning lead: injects prior conversation so Claude knows "this person asked about Marina before, their budget is 2M, they were waiting for floor plan."</p>`
+  },
+  rag: {
+    title: "03 · RAG RETRIEVAL — PGVECTOR SIMILARITY SEARCH",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">The user's message is embedded and compared against your Dubai property knowledge base. Top 3 most relevant chunks are injected into Claude's context.</p>
+      <div class="code-block"><span class="code-comment">-- Step 1: Embed the query (Voyage-3)</span>
+POST https://api.anthropic.com/v1/embeddings
+{
+  <span class="code-key">"model"</span>: <span class="code-str">"voyage-3"</span>,
+  <span class="code-key">"input"</span>: <span class="code-str">"2BR Dubai Marina invest budget 2M"</span>
+}
+<span class="code-comment">→ returns: [0.021, -0.043, 0.087, ...] 1536 dims</span>
+
+<span class="code-comment">-- Step 2: Similarity search in Supabase</span>
+<span class="code-key">SELECT</span> content, similarity
+<span class="code-key">FROM</span> match_documents(query_embedding, match_count := <span class="code-num">3</span>)
+<span class="code-key">WHERE</span> similarity > <span class="code-num">0.72</span>;
+
+<span class="code-comment">-- Returns:</span>
+<span class="code-str">"Dubai Marina rental yields 2024: 2BR avg 6.8–7.2%..."</span>  <span class="code-comment">sim: 0.89</span>
+<span class="code-str">"Off-plan investment process: SPA, Oqood, DLD..."</span>    <span class="code-comment">sim: 0.82</span>
+<span class="code-str">"Marina community guide: JBR walk, metro access..."</span>   <span class="code-comment">sim: 0.78</span></div>
+      <p style="font-size:11px;color:var(--text3);">If all similarity scores &lt; 0.65: agent responds "I don't have specific info on that — let me connect you with an agent." Zero hallucination.</p>`
+  },
+  claude: {
+    title: "04 · CLAUDE API CALL — TOOL USE + RAG CONTEXT",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">The full API call. System prompt + history + RAG chunks + user message. Claude returns a tool_use block.</p>
+      <div class="tool-call">
+        <div class="tool-header">
+          <span>MODEL</span><span class="tool-header-name">claude-sonnet-4-6</span>
+          <span>TOOLS</span><span class="tool-header-name">extract_lead · request_clarification · escalate_human</span>
+        </div>
+        <div class="tool-body">
+          <strong style="color:var(--text);font-size:11px;">System prompt (abridged):</strong><br>
+          "You are Aisha, a professional property consultant at Platinum Key Real Estate Dubai. Respond in the same language as the user (Arabic or English). Your goal is to qualify leads by extracting: intent, budget, location, property type, timeline, buyer_type. If info is sufficient, call extract_lead. If too vague, call request_clarification with ONE specific question only. If the user asks to speak to a human, call escalate_human immediately.<br><br>
+          [RERA context injected] Dubai Marina 2BR rental yield: 6.8–7.2%...<br>
+          [Off-plan context injected] Investment process: SPA, Oqood, DLD transfer..."
+        </div>
+      </div>
+      <div class="tool-call">
+        <div class="tool-header">
+          <span>CLAUDE RESPONSE</span><span class="tool-header-name">type: tool_use · tool: extract_lead</span>
+        </div>
+        <div class="code-block" style="margin:0; border-radius:0 0 6px 6px;">{
+  <span class="code-key">"intent"</span>: <span class="code-str">"invest"</span>,
+  <span class="code-key">"property_type"</span>: <span class="code-str">"2BR"</span>,
+  <span class="code-key">"location"</span>: <span class="code-str">"Dubai Marina"</span>,
+  <span class="code-key">"budget_aed"</span>: <span class="code-num">2000000</span>,
+  <span class="code-key">"buyer_type"</span>: <span class="code-str">"investor"</span>,
+  <span class="code-key">"urgency"</span>: <span class="code-str">"exploring"</span>,
+  <span class="code-key">"language"</span>: <span class="code-str">"english"</span>,
+  <span class="code-key">"lead_score"</span>: <span class="code-str">"HIGH"</span>
+}</div>
+      </div>`
+  },
+  outputs: {
+    title: "05 · THREE PARALLEL OUTPUTS — MAKE.COM ROUTES",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:14px;">Once the lead JSON is ready, Make.com triggers 3 actions simultaneously via parallel routes:</p>
+      <div class="parallel-grid">
+        <div class="parallel-item">
+          <div class="parallel-num">OUTPUT A</div>
+          <div class="parallel-title">Google Sheets row</div>
+          <div class="parallel-detail">timestamp · phone · intent: invest · budget: 2,000,000 · location: Dubai Marina · type: 2BR · score: HIGH · raw message</div>
+        </div>
+        <div class="parallel-item">
+          <div class="parallel-num">OUTPUT B</div>
+          <div class="parallel-title">Reply to Fatima</div>
+          <div class="parallel-detail">Claude generates: "Hi! Great taste — Dubai Marina is excellent for investors. Current 2BR yields are 6.8–7.2%. I have 3 listings in your range. When are you visiting Dubai?"</div>
+        </div>
+        <div class="parallel-item">
+          <div class="parallel-num">OUTPUT C</div>
+          <div class="parallel-title">Broker WhatsApp alert</div>
+          <div class="parallel-detail">To: broker's number. "HIGH LEAD — Marina investor, AED 2M budget, 2BR, overseas buyer. Viewing requested. Auto-reply sent. Respond by 9am."</div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:10px;">Make.com scenario: Webhook → Parse JSON → Router (3 branches) → Google Sheets Add Row + WhatsApp Send Message (×2). Total execution: ~2 seconds.</p>`
+  },
+  reply: {
+    title: "06 · AUTO-REPLY TO FATIMA — CLAUDE-GENERATED",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">Not a template. Claude writes a unique reply for each lead based on their specific inquiry and the RAG context retrieved:</p>
+      <div class="whatsapp-thread">
+        <div>
+          <div class="msg-sender">Fatima Al Zahra · 23:04</div>
+          <div class="msg msg-in">Hi, 2BR Dubai Marina, budget 2M, invest not live</div>
+        </div>
+        <div style="align-self:flex-end; text-align:right;">
+          <div class="msg-sender" style="text-align:right;">Aisha · Platinum Key · 23:04</div>
+          <div class="msg msg-out">Hi! Great choice — Dubai Marina is one of our strongest investment areas right now. 2BR units in the AED 1.8–2.1M range are currently yielding 6.8–7.2% annually, with strong rental demand from professionals. I have 3 excellent options ready to share — could I ask, are you looking at off-plan or ready to move in? And when are you next visiting Dubai? I'd love to arrange a viewing.</div>
+          <div class="msg-time" style="text-align:right;">Delivered ✓✓</div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text3);">Key: the yield figure (6.8–7.2%) came from the RAG knowledge base — not Claude's training data. Grounded, accurate, not hallucinated.</p>`
+  },
+  clarify: {
+    title: "ALT PATH · REQUEST CLARIFICATION — VAGUE INQUIRY",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">If the inquiry lacks enough information (no budget, no location, too vague), Claude calls request_clarification instead of extract_lead. It asks ONE specific question:</p>
+      <div class="whatsapp-thread">
+        <div>
+          <div class="msg-sender">Unknown user · 02:17</div>
+          <div class="msg msg-in">Hi I want to buy property</div>
+        </div>
+        <div style="align-self:flex-end; text-align:right;">
+          <div class="msg-sender" style="text-align:right;">Aisha · Platinum Key · 02:17</div>
+          <div class="msg msg-out">Hello! Happy to help. To find the best options for you — what is your approximate budget in AED?</div>
+        </div>
+      </div>
+      <div class="code-block" style="margin-top:10px;"><span class="code-comment">// Claude's tool_use response for a vague message:</span>
+{
+  <span class="code-key">"tool"</span>: <span class="code-str">"request_clarification"</span>,
+  <span class="code-key">"question"</span>: <span class="code-str">"What is your approximate budget in AED?"</span>,
+  <span class="code-key">"reason"</span>: <span class="code-str">"no_budget"</span>
+}</div>
+      <p style="font-size:11px;color:var(--text3);margin-top:8px;">The agent asks ONE question at a time — never a form-like list. This keeps the conversation natural. After the user replies, the full pipeline reruns with the updated context.</p>`
+  },
+  crm: {
+    title: "05a · CRM PUSH — GOOGLE SHEETS ROW",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">The broker's Google Sheet gets a new row every time a lead is qualified. The broker wakes up to a structured, scored list:</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; font-family:var(--mono); font-size:10px; border-collapse:collapse;">
+          <thead>
+            <tr style="background:var(--surface2);">
+              <th style="padding:8px 10px; text-align:left; color:var(--text3); border:1px solid var(--border); white-space:nowrap;">Timestamp</th>
+              <th style="padding:8px 10px; text-align:left; color:var(--text3); border:1px solid var(--border);">Phone</th>
+              <th style="padding:8px 10px; text-align:left; color:var(--text3); border:1px solid var(--border);">Intent</th>
+              <th style="padding:8px 10px; text-align:left; color:var(--text3); border:1px solid var(--border);">Budget AED</th>
+              <th style="padding:8px 10px; text-align:left; color:var(--text3); border:1px solid var(--border);">Location</th>
+              <th style="padding:8px 10px; text-align:left; color:var(--text3); border:1px solid var(--border);">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:8px 10px; border:1px solid var(--border); color:var(--text2);">2024-01-15 23:04</td>
+              <td style="padding:8px 10px; border:1px solid var(--border); color:var(--text2);">+44791112...</td>
+              <td style="padding:8px 10px; border:1px solid var(--border); color:var(--teal);">invest</td>
+              <td style="padding:8px 10px; border:1px solid var(--border); color:var(--text);">2,000,000</td>
+              <td style="padding:8px 10px; border:1px solid var(--border); color:var(--text);">Dubai Marina</td>
+              <td style="padding:8px 10px; border:1px solid var(--border); color:var(--green); font-weight:600;">HIGH</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:10px;">Make.com Google Sheets module: "Add a Row." Columns mapped from Claude's tool_use JSON. No code required — pure Make.com visual mapping.</p>`
+  },
+  notif: {
+    title: "05b · BROKER NOTIFICATION — WHATSAPP ALERT",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">The broker receives a concise summary on their own WhatsApp — scored and actionable:</p>
+      <div class="whatsapp-thread">
+        <div>
+          <div class="msg-sender">Platinum Key AI System · 23:04</div>
+          <div class="msg" style="background:rgba(245,166,35,0.08); border:1px solid rgba(245,166,35,0.2); align-self:flex-start; color:var(--text);">
+            <strong style="color:var(--amber);">🔴 HIGH LEAD · Dubai Marina</strong><br><br>
+            Intent: Investor (not end-user)<br>
+            Budget: AED 2,000,000<br>
+            Type: 2BR apartment<br>
+            Buyer: Overseas (London)<br>
+            Urgency: Exploring<br><br>
+            Auto-reply sent. Viewing requested for tomorrow morning.<br><br>
+            <strong>Action: Follow up before 9am</strong>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:8px;">The broker doesn't need to read a raw WhatsApp thread. They get a structured brief. The AI did the triage work — the broker's job starts at closing.</p>`
+  },
+  confirm: {
+    title: "07 · VIEWING CONFIRMATION — CALENDAR BOOKING",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">After the broker confirms availability (or based on pre-set available slots), the agent sends Fatima a viewing confirmation:</p>
+      <div class="whatsapp-thread">
+        <div style="align-self:flex-end; text-align:right;">
+          <div class="msg-sender" style="text-align:right;">Aisha · Platinum Key · 23:05</div>
+          <div class="msg msg-out">Perfect! I've arranged a viewing for tomorrow morning at 10:30am. Your consultant will be Ahmed Al Rashidi (+971 50 XXX XXXX). The property is at Marina Gate Tower 2, Dubai Marina — he'll meet you in the lobby. I'll send you the exact address and floor plan now. See you tomorrow!</div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text3);margin-top:8px;">Optional extension: Google Calendar integration via Make.com to automatically block the broker's calendar. The agent can check calendar availability before confirming the time slot.</p>`
+  },
+  save: {
+    title: "06 · SAVE UPDATED HISTORY — SUPABASE UPSERT",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">After every interaction, the conversation history is updated. The next message from Fatima picks up exactly where this ended:</p>
+      <div class="code-block"><span class="code-comment">-- n8n Supabase node: Upsert</span>
+<span class="code-key">INSERT INTO</span> conversations (phone_number, messages, updated_at)
+<span class="code-key">VALUES</span> (
+  <span class="code-str">'447911123456'</span>,
+  <span class="code-str">'[
+    {"role": "user", "content": "Hi, 2BR Dubai Marina, budget 2M, invest not live"},
+    {"role": "assistant", "content": "Hi! Great choice — Dubai Marina is one of our strongest..."}
+  ]'</span>,
+  <span class="code-val">NOW()</span>
+)
+<span class="code-key">ON CONFLICT</span> (phone_number)
+<span class="code-key">DO UPDATE SET</span>
+  messages = EXCLUDED.messages,
+  updated_at = EXCLUDED.updated_at;</div>
+      <p style="font-size:11px;color:var(--text3);">The messages array grows with each exchange. After ~15 messages, optionally summarize the conversation with Claude to compress context and save tokens while preserving key facts.</p>`
+  },
+  viewing: {
+    title: "07 · BROKER FOLLOW-UP — THE HUMAN PART",
+    html: `
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px;">This is where your value to the brokerage becomes concrete. Before your agent: the broker woke up, read through 20 cold WhatsApp messages, tried to remember who had a budget and who was just browsing. After your agent:</p>
+      <div class="parallel-grid">
+        <div class="parallel-item">
+          <div class="parallel-num" style="color:var(--coral);">BEFORE</div>
+          <div class="parallel-title">Manual triage</div>
+          <div class="parallel-detail">Broker reads all messages. Guesses intent. Re-asks basic questions. Hot leads go cold overnight. ~2 hrs of admin per day.</div>
+        </div>
+        <div class="parallel-item">
+          <div class="parallel-num" style="color:var(--teal);">AFTER</div>
+          <div class="parallel-title">Broker sees scored list</div>
+          <div class="parallel-detail">Opens Google Sheets: 3 HIGH leads, 2 MEDIUM, 4 LOW. Calls the HIGH leads first. Viewing already booked. Starts at hello — not at "what's your budget?"</div>
+        </div>
+        <div class="parallel-item">
+          <div class="parallel-num" style="color:var(--green);">VALUE</div>
+          <div class="parallel-title">Why they pay AED 1,500/mo</div>
+          <div class="parallel-detail">One recovered lead per month (avg commission AED 30,000–60,000) justifies 2 years of your retainer. The ROI conversation sells itself.</div>
+        </div>
+      </div>`
+  }
+};
+
+function showDetail(key) {
+  const d = details[key];
+  if (!d) return;
+  document.getElementById('panel-title').textContent = d.title;
+  document.getElementById('panel-body').innerHTML = d.html;
+  document.querySelectorAll('.flow-step').forEach(s => {
+    if (s.getAttribute('onclick') === `showDetail('${key}')`) {
+      s.classList.add('active');
+    } else {
+      s.classList.remove('active');
+    }
+  });
+  document.getElementById('detail-panel').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+</script>
+</body>
+</html>

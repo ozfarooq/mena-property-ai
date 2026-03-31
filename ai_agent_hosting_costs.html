@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Hosting Costs — Monthly Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0f0d;
+  --surface: #111714;
+  --surface2: #182019;
+  --surface3: #1e2820;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --green: #22d17a;
+  --green-dim: rgba(34,209,122,0.1);
+  --green-mid: rgba(34,209,122,0.25);
+  --amber: #f5b942;
+  --amber-dim: rgba(245,185,66,0.1);
+  --blue: #5ba8f5;
+  --blue-dim: rgba(91,168,245,0.1);
+  --red: #f56b6b;
+  --red-dim: rgba(245,107,107,0.1);
+  --muted: rgba(255,255,255,0.38);
+  --text: #e8ede9;
+  --mono: 'DM Mono', monospace;
+  --serif: 'Fraunces', Georgia, serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  min-height: 100vh;
+}
+
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(34,209,122,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 80%, rgba(91,168,245,0.03) 0%, transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrap { max-width: 960px; margin:0 auto; padding: 44px 24px 80px; position:relative; z-index:1; }
+
+/* ── HEADER ── */
+.hdr { margin-bottom:44px; border-bottom:1px solid var(--border); padding-bottom:28px; }
+.hdr-tag { font-size:10px; letter-spacing:0.18em; color:var(--green); text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.hdr-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+h1 { font-family:var(--serif); font-size:clamp(28px,5vw,44px); font-weight:300; line-height:1.08; letter-spacing:-0.02em; color:var(--text); margin-bottom:12px; }
+h1 em { font-style:italic; color:var(--green); }
+.hdr-sub { font-size:12px; color:var(--muted); line-height:1.7; max-width:560px; }
+
+/* ── SLIDERS ── */
+.sliders-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  padding:24px 28px;
+  margin-bottom:28px;
+}
+
+.sliders-title { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
+
+.sl-row { display:grid; grid-template-columns:200px 1fr 100px; gap:16px; align-items:center; margin-bottom:16px; }
+.sl-row:last-child { margin-bottom:0; }
+.sl-label { font-size:11px; color:var(--muted); }
+.sl-val { font-size:13px; font-weight:500; color:var(--green); text-align:right; letter-spacing:0.02em; }
+
+input[type=range] {
+  -webkit-appearance:none;
+  width:100%; height:3px;
+  background:var(--surface3);
+  border-radius:2px;
+  outline:none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none;
+  width:14px; height:14px;
+  border-radius:50%;
+  background:var(--green);
+  cursor:pointer;
+  border:2px solid var(--bg);
+}
+input[type=range]::-moz-range-thumb {
+  width:14px; height:14px;
+  border-radius:50%;
+  background:var(--green);
+  cursor:pointer;
+  border:2px solid var(--bg);
+}
+
+/* ── SUMMARY METRICS ── */
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:28px; }
+
+.metric {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:18px 16px;
+  transition:border-color 0.2s;
+}
+.metric:hover { border-color:var(--border2); }
+.metric-label { font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.metric-value { font-size:26px; font-weight:500; color:var(--text); letter-spacing:-0.02em; line-height:1; margin-bottom:5px; }
+.metric-sub { font-size:10px; color:var(--muted); line-height:1.5; }
+.metric.green-accent { border-color:rgba(34,209,122,0.2); background:rgba(34,209,122,0.04); }
+.metric.green-accent .metric-value { color:var(--green); }
+
+/* ── COST TABLE ── */
+.table-wrap {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:28px;
+}
+
+.tbl-header {
+  display:grid;
+  grid-template-columns:24px 1fr 100px 90px 110px;
+  padding:10px 20px;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+}
+.tbl-header span { font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); }
+.tbl-header span.right { text-align:right; }
+
+.tbl-row {
+  display:grid;
+  grid-template-columns:24px 1fr 100px 90px 110px;
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  align-items:center;
+  transition:background 0.15s;
+}
+.tbl-row:last-child { border-bottom:none; }
+.tbl-row:hover { background:var(--surface2); }
+.tbl-row.total { background:var(--surface2); border-top:1px solid var(--border2); }
+
+.dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+.row-info { display:flex; flex-direction:column; gap:3px; }
+.row-name { font-size:12px; font-weight:500; color:var(--text); display:flex; align-items:center; gap:7px; }
+.row-desc { font-size:10px; color:var(--muted); line-height:1.5; }
+
+.badge {
+  font-size:9px; padding:2px 6px; border-radius:10px;
+  letter-spacing:0.04em; font-weight:400;
+}
+.badge-free { background:var(--green-dim); color:var(--green); }
+.badge-fixed { background:var(--blue-dim); color:var(--blue); }
+.badge-usage { background:var(--amber-dim); color:var(--amber); }
+
+.plan-cell { font-size:10px; color:var(--muted); }
+.fixed-cell { font-size:12px; font-weight:500; text-align:right; }
+.fixed-cell.zero { color:var(--green); }
+.fixed-cell.nonzero { color:var(--blue); }
+.usage-cell { font-size:12px; text-align:right; }
+.usage-cell.zero { color:var(--muted); }
+.usage-cell.active { color:var(--amber); font-weight:500; }
+.total-label { font-size:13px; font-weight:500; color:var(--text); }
+.total-fixed { font-size:14px; font-weight:500; text-align:right; color:var(--blue); }
+.total-usage-cell { font-size:14px; font-weight:500; text-align:right; color:var(--amber); }
+
+/* ── MARGIN ANALYSIS ── */
+.margin-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:28px; }
+
+.margin-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px;
+}
+.margin-card-label { font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+.margin-bar-wrap { margin-bottom:12px; }
+.margin-bar-bg { background:var(--surface3); border-radius:2px; height:6px; overflow:hidden; }
+.margin-bar-fill { height:100%; border-radius:2px; background:var(--green); transition:width 0.4s ease; }
+.margin-bar-label { display:flex; justify-content:space-between; margin-top:5px; font-size:10px; color:var(--muted); }
+.margin-big { font-size:36px; font-weight:300; color:var(--green); font-family:var(--serif); letter-spacing:-0.02em; margin-bottom:4px; }
+.margin-sub { font-size:11px; color:var(--muted); line-height:1.6; }
+
+/* ── TIPS ── */
+.tips { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+
+.tip {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:2px solid var(--green);
+  border-radius:0 8px 8px 0;
+  padding:14px 18px;
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.7;
+}
+.tip strong { color:var(--text); font-weight:500; }
+.tip.amber-tip { border-left-color:var(--amber); }
+.tip.blue-tip { border-left-color:var(--blue); }
+
+/* ── SCALING TABLE ── */
+.scale-table {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.scale-header {
+  display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+  padding:10px 20px;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+}
+.scale-header span { font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); text-align:center; }
+.scale-header span:first-child { text-align:left; }
+
+.scale-row {
+  display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+  padding:13px 20px;
+  border-bottom:1px solid var(--border);
+  font-size:11px;
+  transition:background 0.15s;
+}
+.scale-row:last-child { border-bottom:none; }
+.scale-row:hover { background:var(--surface2); }
+.scale-row span { text-align:center; color:var(--muted); }
+.scale-row span:first-child { text-align:left; color:var(--text); font-weight:500; }
+.scale-row .green { color:var(--green); }
+.scale-row .amber { color:var(--amber); }
+.scale-row span.active-row { color:var(--green); }
+
+/* ── FOOTER ── */
+.footer { margin-top:40px; padding-top:20px; border-top:1px solid var(--border); font-size:10px; color:var(--muted); line-height:1.7; }
+.footer a { color:var(--green); text-decoration:none; }
+
+/* Responsive */
+@media (max-width:640px) {
+  .metrics { grid-template-columns:1fr 1fr; }
+  .tbl-header, .tbl-row { grid-template-columns:20px 1fr 80px 100px; }
+  .tbl-header span:nth-child(3), .plan-cell { display:none; }
+  .sl-row { grid-template-columns:1fr 100px; }
+  .sl-label { display:none; }
+  .margin-grid { grid-template-columns:1fr; }
+  .scale-header, .scale-row { grid-template-columns:1fr 1fr 1fr; }
+  .scale-header span:nth-child(3), .scale-header span:nth-child(4) { display:none; }
+  .scale-row span:nth-child(3), .scale-row span:nth-child(4) { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-tag">AI Agent Infrastructure · UAE Real Estate</div>
+    <h1>Monthly hosting costs<br>for your <em>agent stack</em></h1>
+    <p class="hdr-sub">Interactive breakdown of every service in your pipeline. Adjust your usage with the sliders — all numbers update in real time. Based on current 2025–2026 published pricing from Anthropic, n8n, Make.com, Supabase, and Meta.</p>
+  </div>
+
+  <!-- SLIDERS -->
+  <div class="sliders-card">
+    <div class="sliders-title">// configure your usage</div>
+    <div class="sl-row">
+      <span class="sl-label">WhatsApp inquiries / month</span>
+      <input type="range" min="50" max="3000" step="50" value="300" id="sl-inq">
+      <span class="sl-val" id="sv-inq">300</span>
+    </div>
+    <div class="sl-row">
+      <span class="sl-label">Avg tokens per conversation</span>
+      <input type="range" min="500" max="5000" step="100" value="1500" id="sl-tok">
+      <span class="sl-val" id="sv-tok">1,500</span>
+    </div>
+    <div class="sl-row">
+      <span class="sl-label">Number of brokerage clients</span>
+      <input type="range" min="1" max="12" step="1" value="2" id="sl-cli">
+      <span class="sl-val" id="sv-cli">2</span>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Fixed / month</div>
+      <div class="metric-value" id="m-fixed">$57.59</div>
+      <div class="metric-sub">n8n + Make + Supabase + domain</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Variable / month</div>
+      <div class="metric-value" id="m-var">~$4.68</div>
+      <div class="metric-sub">Claude API + WhatsApp + embeddings</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Total estimated</div>
+      <div class="metric-value" id="m-total">~$62</div>
+      <div class="metric-sub">at 300 inquiries / 2 clients</div>
+    </div>
+    <div class="metric green-accent">
+      <div class="metric-label">Gross margin</div>
+      <div class="metric-value" id="m-margin">92%</div>
+      <div class="metric-sub" id="m-margin-sub">vs AED 1,500/mo per client</div>
+    </div>
+  </div>
+
+  <!-- COST TABLE -->
+  <div class="table-wrap">
+    <div class="tbl-header">
+      <span></span>
+      <span>Service</span>
+      <span>Plan</span>
+      <span class="right">Fixed</span>
+      <span class="right">Usage est.</span>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#22d17a"></div>
+      <div class="row-info">
+        <div class="row-name">Claude API <span class="badge badge-usage">per token</span></div>
+        <div class="row-desc">Haiku 4.5 for qualification · Sonnet 4.6 for reply generation · $1/$5 and $3/$15 per 1M tokens</div>
+      </div>
+      <div class="plan-cell">Haiku + Sonnet</div>
+      <div class="fixed-cell zero">$0</div>
+      <div class="usage-cell active" id="c-claude">$4.50</div>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#5ba8f5"></div>
+      <div class="row-info">
+        <div class="row-name">n8n Cloud <span class="badge badge-fixed">fixed</span></div>
+        <div class="row-desc">Starter plan · 2,500 executions/mo · webhook triggers + all workflow runs · unlimited workflows</div>
+      </div>
+      <div class="plan-cell">Starter</div>
+      <div class="fixed-cell nonzero">$20.00</div>
+      <div class="usage-cell zero">—</div>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#5ba8f5"></div>
+      <div class="row-info">
+        <div class="row-name">Make.com <span class="badge badge-fixed">fixed</span></div>
+        <div class="row-desc">Core plan · 10,000 credits/mo · CRM push, broker notifications, routing logic · custom AI provider support</div>
+      </div>
+      <div class="plan-cell">Core</div>
+      <div class="fixed-cell nonzero">$10.59</div>
+      <div class="usage-cell zero">—</div>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#5ba8f5"></div>
+      <div class="row-info">
+        <div class="row-name">Supabase <span class="badge badge-fixed">fixed</span></div>
+        <div class="row-desc">Pro plan · pgvector RAG + conversation memory · 8GB DB + 100GB storage included · $25 includes $10 compute credit</div>
+      </div>
+      <div class="plan-cell">Pro</div>
+      <div class="fixed-cell nonzero">$25.00</div>
+      <div class="usage-cell zero">—</div>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#f5b942"></div>
+      <div class="row-info">
+        <div class="row-name">WhatsApp Business API <span class="badge badge-usage">per conv</span></div>
+        <div class="row-desc">Meta Cloud API · first 1,000 service conversations free/mo · ~$0.05 per conversation beyond that</div>
+      </div>
+      <div class="plan-cell">Pay-as-go</div>
+      <div class="fixed-cell zero">$0</div>
+      <div class="usage-cell" id="c-wa">$0</div>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#888"></div>
+      <div class="row-info">
+        <div class="row-name">Voyage-3 Embeddings <span class="badge badge-usage">per token</span></div>
+        <div class="row-desc">RAG ingestion (one-time) + query embedding per search · $0.000006 per 1K tokens · negligible at this scale</div>
+      </div>
+      <div class="plan-cell">Pay-as-go</div>
+      <div class="fixed-cell zero">$0</div>
+      <div class="usage-cell active" id="c-voyage">$0.18</div>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#888"></div>
+      <div class="row-info">
+        <div class="row-name">Google Workspace / Sheets <span class="badge badge-free">free</span></div>
+        <div class="row-desc">CRM layer · free tier sufficient for all brokerage-scale workloads · unlimited rows, API access</div>
+      </div>
+      <div class="plan-cell">Free</div>
+      <div class="fixed-cell zero">$0</div>
+      <div class="usage-cell zero">—</div>
+    </div>
+
+    <div class="tbl-row">
+      <div class="dot" style="background:#888"></div>
+      <div class="row-info">
+        <div class="row-name">Domain + email <span class="badge badge-fixed">annual</span></div>
+        <div class="row-desc">Professional domain for demos and client comms · amortised monthly · optional</div>
+      </div>
+      <div class="plan-cell">Annual</div>
+      <div class="fixed-cell nonzero">~$2.00</div>
+      <div class="usage-cell zero">—</div>
+    </div>
+
+    <div class="tbl-row total">
+      <div></div>
+      <div class="total-label">Total monthly</div>
+      <div class="plan-cell"></div>
+      <div class="total-fixed" id="t-fixed">$57.59</div>
+      <div class="total-usage-cell" id="t-usage">+ $4.68</div>
+    </div>
+  </div>
+
+  <!-- MARGIN ANALYSIS -->
+  <div class="margin-grid">
+    <div class="margin-card">
+      <div class="margin-card-label">// gross margin on infrastructure</div>
+      <div class="margin-big" id="mg-pct">92%</div>
+      <div class="margin-sub" id="mg-sub">At AED 1,500/mo per client (~$408), your cost to serve is ~$31. Infrastructure is not your business constraint — your time is.</div>
+      <div class="margin-bar-wrap" style="margin-top:14px;">
+        <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.1em;">
+          <span>Cost</span><span>Revenue</span>
+        </div>
+        <div class="margin-bar-bg">
+          <div class="margin-bar-fill" id="mg-bar" style="width:8%"></div>
+        </div>
+        <div class="margin-bar-label">
+          <span id="mg-cost-label">~$31 / client</span>
+          <span id="mg-rev-label">~$408 / client</span>
+        </div>
+      </div>
+    </div>
+    <div class="margin-card">
+      <div class="margin-card-label">// n8n upgrade trigger</div>
+      <div style="font-size:12px; color:var(--muted); line-height:1.75; margin-bottom:14px;" id="n8n-advice">At 2 clients, n8n Cloud Starter ($20/mo) is the right call — no server to manage, automatic updates, 2,500 executions covers your volume comfortably.</div>
+      <div style="height:1px; background:var(--border); margin:14px 0;"></div>
+      <div class="margin-card-label">// whatsapp free tier status</div>
+      <div style="font-size:12px; line-height:1.75;" id="wa-advice">At 300 inquiries, you're well inside Meta's free 1,000 conversations/month. No WhatsApp cost until you exceed that.</div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tips">
+    <div class="tip">
+      <strong>Use Haiku for extraction, Sonnet for generation.</strong> Lead qualification (extracting intent, budget, location via tool use) is a simple structured task — Haiku 4.5 at $1/$5 per million tokens handles it perfectly at 5× less cost. Only call Sonnet ($3/$15) when generating the personalised WhatsApp reply where language quality matters. This split cuts your Claude bill by ~60% vs using Sonnet for everything.
+    </div>
+    <div class="tip amber-tip">
+      <strong>Enable prompt caching for your system prompt.</strong> Your real estate system prompt (RERA rules, community guides, RAG chunks) is repeated on every API call. Anthropic's prompt caching charges only 10% of the base input price on cache hits after the first call. At 300 conversations with a 2,000-token system prompt, this alone saves ~$0.50/month — small now, meaningful at 2,000+ inquiries.
+    </div>
+    <div class="tip blue-tip">
+      <strong>Self-host n8n on a VPS when you hit 5 clients.</strong> n8n Community Edition is 100% free with unlimited executions. A Hetzner or DigitalOcean VPS costs $6–7/month. That saves $13–14/month vs the Cloud Starter plan and removes the 2,500 execution cap entirely. The only cost is 2 hours of setup time. Upgrade trigger: 5+ brokerage clients or 1,000+ monthly executions.
+    </div>
+  </div>
+
+  <!-- SCALING TABLE -->
+  <div style="font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">// how costs scale as you grow</div>
+  <div class="scale-table">
+    <div class="scale-header">
+      <span>Scenario</span>
+      <span>Inquiries/mo</span>
+      <span>Clients</span>
+      <span>Total cost</span>
+      <span>Margin</span>
+    </div>
+    <div class="scale-row" id="sr0">
+      <span>Solo start</span>
+      <span>100</span>
+      <span>1</span>
+      <span>~$59</span>
+      <span class="green">86%</span>
+    </div>
+    <div class="scale-row" id="sr1">
+      <span>2 clients</span>
+      <span>300</span>
+      <span>2</span>
+      <span>~$62</span>
+      <span class="green">92%</span>
+    </div>
+    <div class="scale-row" id="sr2">
+      <span>5 clients</span>
+      <span>750</span>
+      <span>5</span>
+      <span>~$75</span>
+      <span class="green">96%</span>
+    </div>
+    <div class="scale-row" id="sr3">
+      <span>10 clients (self-host n8n)</span>
+      <span>1,500</span>
+      <span>10</span>
+      <span>~$60</span>
+      <span class="green">98%</span>
+    </div>
+    <div class="scale-row" id="sr4">
+      <span>High volume (SA + UAE)</span>
+      <span>3,000</span>
+      <span>10</span>
+      <span>~$140</span>
+      <span class="amber">97%</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Pricing sources: <a href="https://platform.claude.com/docs/en/about-claude/pricing">Anthropic API pricing</a> (Haiku 4.5: $1/$5, Sonnet 4.6: $3/$15 per MTok) · <a href="https://n8n.io/pricing/">n8n Cloud</a> (Starter $20/mo) · <a href="https://www.make.com/en/pricing">Make.com</a> (Core $10.59/mo) · <a href="https://supabase.com/pricing">Supabase</a> (Pro $25/mo) · Meta WhatsApp Business Cloud API (1,000 free service conversations/mo). All prices USD. Last verified March 2026.
+  </div>
+
+</div>
+
+<script>
+function fmt2(n){ return '$'+n.toFixed(2); }
+function fmtApprox(n){ return '~$'+Math.round(n); }
+function fmtPct(n){ return Math.round(n)+'%'; }
+
+function calcCosts(inq, tok, cli){
+  var haikuIn  = (inq * tok * 0.30) / 1e6 * 1.0;
+  var haikuOut = (inq * tok * 0.10) / 1e6 * 5.0;
+  var sonIn    = (inq * tok * 0.35) / 1e6 * 3.0;
+  var sonOut   = (inq * tok * 0.25) / 1e6 * 15.0;
+  var claude   = haikuIn + haikuOut + sonIn + sonOut;
+
+  var wa = Math.max(0, inq - 1000) * 0.05;
+
+  var voyage = (inq * 200) / 1e6 * 6.0;
+
+  var fixed = 20 + 10.59 + 25 + 2;
+  var variable = claude + wa + voyage;
+  var total = fixed + variable;
+  var perClient = total / cli;
+  var retainerUSD = 408;
+  var totalRev = retainerUSD * cli;
+  var margin = 100 * (1 - total / totalRev);
+
+  return { claude, wa, voyage, fixed, variable, total, perClient, margin, totalRev };
+}
+
+function update(){
+  var inq = parseInt(document.getElementById('sl-inq').value);
+  var tok = parseInt(document.getElementById('sl-tok').value);
+  var cli = parseInt(document.getElementById('sl-cli').value);
+
+  document.getElementById('sv-inq').textContent = inq.toLocaleString();
+  document.getElementById('sv-tok').textContent = tok.toLocaleString();
+  document.getElementById('sv-cli').textContent = cli;
+
+  var c = calcCosts(inq, tok, cli);
+
+  document.getElementById('c-claude').textContent = fmt2(c.claude);
+  document.getElementById('c-claude').className = 'usage-cell ' + (c.claude > 0 ? 'active' : 'zero');
+
+  document.getElementById('c-wa').textContent = c.wa > 0 ? fmt2(c.wa) : '$0';
+  document.getElementById('c-wa').className = 'usage-cell ' + (c.wa > 0 ? 'active' : 'zero');
+
+  document.getElementById('c-voyage').textContent = fmt2(c.voyage);
+
+  document.getElementById('t-fixed').textContent = fmt2(c.fixed);
+  document.getElementById('t-usage').textContent = '+ ' + fmt2(c.variable);
+
+  document.getElementById('m-fixed').textContent = fmt2(c.fixed);
+  document.getElementById('m-var').textContent = fmtApprox(c.variable);
+  document.getElementById('m-total').textContent = fmtApprox(c.total);
+  document.getElementById('m-margin').textContent = fmtPct(Math.max(0, c.margin));
+  document.getElementById('m-margin-sub').textContent = 'vs AED 1,500/mo ×'+cli+' clients ('+fmtApprox(c.totalRev)+'/mo revenue)';
+
+  document.getElementById('mg-pct').textContent = fmtPct(Math.max(0, c.margin));
+  document.getElementById('mg-sub').textContent = 'At AED 1,500/mo per client (~$408), your cost to serve '+cli+' client'+(cli>1?'s':'')+' is '+fmtApprox(c.total)+'. Infrastructure is not your constraint — your time is.';
+  document.getElementById('mg-cost-label').textContent = fmtApprox(c.perClient)+' / client';
+  document.getElementById('mg-rev-label').textContent = '~$408 / client';
+  var barPct = Math.min(50, Math.max(2, (c.perClient / 408) * 100));
+  document.getElementById('mg-bar').style.width = barPct.toFixed(1) + '%';
+
+  var n8nMsg = cli >= 5
+    ? 'At '+cli+' clients, self-host n8n on a $7/mo VPS (Community Edition, unlimited executions). Saves $13/mo, removes execution cap. Worth the 2-hour setup.'
+    : 'At '+cli+' client'+(cli>1?'s':'')+', n8n Cloud Starter ($20/mo) is right — no server to manage. Upgrade to self-host at 5+ clients.';
+  document.getElementById('n8n-advice').textContent = n8nMsg;
+
+  var waMsg = inq <= 1000
+    ? 'At '+inq.toLocaleString()+' inquiries, inside Meta\'s free 1,000 conversations/month. Zero WhatsApp cost.'
+    : 'At '+inq.toLocaleString()+' inquiries, you\'re '+( inq-1000).toLocaleString()+' over the free tier — costing '+fmt2(c.wa)+'/mo. Still negligible vs retainer revenue.';
+  document.getElementById('wa-advice').textContent = waMsg;
+  document.getElementById('wa-advice').style.color = inq > 1000 ? 'var(--amber)' : 'var(--green)';
+}
+
+['sl-inq','sl-tok','sl-cli'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', update);
+});
+update();
+</script>
+</body>
+</html>

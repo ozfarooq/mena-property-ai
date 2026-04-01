@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaxClear UAE — AI Compliance Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E4C96A;
+  --gold-dim: #7A6530;
+  --gold-bg: rgba(201,168,76,0.08);
+  --ink: #0F0E0B;
+  --ink2: #1C1A16;
+  --ink3: #272420;
+  --surface: #1A1814;
+  --surface2: #211F19;
+  --border: rgba(201,168,76,0.15);
+  --border2: rgba(201,168,76,0.25);
+  --text: #E8E0CC;
+  --text2: #A89F88;
+  --text3: #6A6254;
+  --green: #4CAF7D;
+  --green-bg: rgba(76,175,125,0.12);
+  --red: #E05C5C;
+  --red-bg: rgba(224,92,92,0.1);
+  --blue: #5B9BD5;
+  --blue-bg: rgba(91,155,213,0.1);
+  --r: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--ink);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;overflow:hidden}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:220px 1fr 260px;grid-template-rows:52px 1fr;height:100vh;gap:0}
+.topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--ink2);border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar{background:var(--ink2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.main{display:flex;flex-direction:column;overflow:hidden;background:var(--ink)}
+.panel{background:var(--ink2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+
+/* TOPBAR */
+.logo{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);letter-spacing:0.03em;display:flex;align-items:center;gap:10px}
+.logo-sub{font-family:'Outfit',sans-serif;font-size:11px;color:var(--text3);font-weight:400;letter-spacing:0.05em;text-transform:uppercase;margin-top:1px}
+.logo-stack{display:flex;flex-direction:column;gap:0}
+.topnav{display:flex;gap:2px}
+.tnav{background:none;border:none;color:var(--text3);font-family:'Outfit',sans-serif;font-size:12px;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all 0.15s;letter-spacing:0.02em}
+.tnav:hover{color:var(--text);background:var(--surface2)}
+.tnav.active{color:var(--gold);background:var(--gold-bg);border:1px solid var(--border)}
+.top-right{display:flex;align-items:center;gap:12px}
+.plan-pill{font-size:11px;padding:4px 12px;border-radius:99px;background:var(--surface2);border:1px solid var(--gold-dim);color:var(--gold);letter-spacing:0.04em}
+.usage-txt{font-size:11px;color:var(--text3)}
+.upgrade-btn-top{font-size:11px;padding:5px 14px;border-radius:6px;background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;transition:all 0.15s;letter-spacing:0.03em}
+.upgrade-btn-top:hover{background:var(--gold-light)}
+
+/* SIDEBAR */
+.sidebar-inner{padding:16px 10px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:20px}
+.sidebar-inner::-webkit-scrollbar{width:3px}
+.sidebar-inner::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.s-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0 8px;margin-bottom:6px}
+.s-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.12s;border:1px solid transparent;background:none;width:100%;text-align:left;font-family:'Outfit',sans-serif}
+.s-item:hover{background:var(--surface2);color:var(--text)}
+.s-item.active{background:var(--gold-bg);color:var(--gold);border-color:var(--border)}
+.s-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.s-dot.gold{background:var(--gold)}
+.s-dot.green{background:var(--green)}
+.s-dot.blue{background:var(--blue)}
+.s-dot.dim{background:var(--text3)}
+.s-count{margin-left:auto;font-size:10px;background:var(--surface2);padding:1px 6px;border-radius:99px;color:var(--text3)}
+.s-item.active .s-count{background:var(--gold-bg);color:var(--gold-dim)}
+.sidebar-bottom{padding:12px 10px;border-top:1px solid var(--border)}
+.upgrade-card{background:var(--surface2);border:1px solid var(--gold-dim);border-radius:10px;padding:14px;text-align:center}
+.upgrade-card p{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.upgrade-card strong{color:var(--gold)}
+.upgrade-btn{width:100%;padding:8px;border-radius:7px;background:var(--gold);color:var(--ink);border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.15s;letter-spacing:0.03em}
+.upgrade-btn:hover{background:var(--gold-light)}
+
+/* CHAT MAIN */
+.messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.messages::-webkit-scrollbar{width:3px}
+.messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* WELCOME */
+.welcome{max-width:560px;margin:auto;text-align:center;padding:20px}
+.welcome-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--green);background:var(--green-bg);border:1px solid rgba(76,175,125,0.25);padding:5px 14px;border-radius:99px;margin-bottom:20px;letter-spacing:0.04em}
+.rag-pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
+.welcome h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.2}
+.welcome h1 em{color:var(--gold);font-style:italic}
+.welcome p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px;max-width:420px;margin-left:auto;margin-right:auto}
+.suggestion-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+.sug{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all 0.15s}
+.sug:hover{border-color:var(--gold-dim);background:var(--gold-bg)}
+.sug-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--gold-dim);margin-bottom:5px}
+.sug-text{font-size:12px;color:var(--text2);line-height:1.5}
+.sug:hover .sug-text{color:var(--text)}
+
+/* MESSAGES */
+.msg{display:flex;gap:10px;animation:fadeUp 0.2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;margin-top:2px}
+.av.bot{background:var(--ink3);border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:14px}
+.av.usr{background:var(--surface2);color:var(--text2);font-size:11px}
+.bubble{max-width:75%;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.75;color:var(--text)}
+.msg.user .bubble{background:var(--surface2);border:1px solid var(--border);border-radius:14px 14px 2px 14px;color:var(--text2)}
+.msg:not(.user) .bubble{background:var(--ink2);border:1px solid var(--border);border-radius:14px 14px 14px 2px}
+
+/* ANSWER PARTS */
+.ans-text{margin-bottom:12px}
+.ans-sources{border-top:1px solid var(--border);padding-top:10px;margin-top:4px}
+.src-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:7px}
+.src-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.src-chip{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--text2);cursor:pointer;transition:all 0.12s}
+.src-chip:hover{border-color:var(--gold-dim);color:var(--gold)}
+.src-chip .art{background:var(--gold);color:var(--ink);border-radius:3px;padding:1px 5px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.conf-row{display:flex;align-items:center;gap:8px}
+.conf-lbl{font-size:11px;color:var(--text3)}
+.conf-track{flex:1;height:3px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.conf-fill{height:100%;background:var(--green);border-radius:2px;transition:width 0.6s ease}
+.conf-val{font-size:11px;color:var(--green);font-weight:500;font-family:'JetBrains Mono',monospace}
+.disclaimer{font-size:11px;color:var(--text3);margin-top:10px;padding:7px 10px;background:var(--ink3);border-radius:6px;border-left:2px solid var(--border2);line-height:1.6}
+
+/* THINKING */
+.thinking-bubble{display:flex;gap:10px;animation:fadeUp 0.2s ease}
+.thinking-inner{background:var(--ink2);border:1px solid var(--border);border-radius:14px 14px 14px 2px;padding:12px 16px}
+.thinking-step{font-size:11px;color:var(--text3);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.thinking-step.done{color:var(--green)}
+.thinking-step.active{color:var(--gold)}
+.step-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.step-dot.done{background:var(--green)}
+.step-dot.active{background:var(--gold);animation:pulse 1s infinite}
+.step-dot.pending{background:var(--text3)}
+.dots{display:flex;gap:3px;margin-top:4px}
+.dots span{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+
+/* INPUT */
+.input-wrap{padding:14px 20px 16px;background:var(--ink);border-top:1px solid var(--border);flex-shrink:0}
+.input-box{display:flex;align-items:flex-end;gap:8px;background:var(--ink2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;transition:border-color 0.15s}
+.input-box:focus-within{border-color:var(--gold-dim)}
+.chat-ta{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;resize:none;line-height:1.5;max-height:100px;min-height:20px}
+.chat-ta::placeholder{color:var(--text3)}
+.send-btn{width:32px;height:32px;border-radius:8px;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s}
+.send-btn:hover{background:var(--gold-light)}
+.send-btn:disabled{background:var(--surface2);cursor:not-allowed}
+.send-btn svg{width:13px;height:13px}
+.hints{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.hint{font-size:11px;color:var(--text3);background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:3px 10px;cursor:pointer;transition:all 0.12s;font-family:'Outfit',sans-serif}
+.hint:hover{border-color:var(--gold-dim);color:var(--gold)}
+
+/* RIGHT PANEL */
+.panel-hdr{padding:14px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.panel-hdr h3{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;letter-spacing:0.02em}
+.panel-hdr p{font-size:11px;color:var(--text3)}
+.rag-status{display:flex;align-items:center;gap:6px;padding:8px 14px;font-size:11px;border-bottom:1px solid var(--border);color:var(--text3);flex-shrink:0;transition:color 0.3s}
+.rag-status.active{color:var(--green)}
+.rag-led{width:6px;height:6px;border-radius:50%;background:var(--text3);transition:background 0.3s}
+.rag-status.active .rag-led{background:var(--green);animation:pulse 1.5s infinite}
+.source-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px}
+.source-list::-webkit-scrollbar{width:3px}
+.source-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.src-card{background:var(--ink3);border:1px solid var(--border);border-radius:9px;padding:11px;cursor:pointer;transition:all 0.12s}
+.src-card:hover{border-color:var(--gold-dim)}
+.src-card.top{border-color:var(--gold-dim);background:var(--gold-bg)}
+.sc-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px}
+.sc-ref{font-size:10px;color:var(--gold-dim);font-family:'JetBrains Mono',monospace;margin-bottom:6px;font-weight:500}
+.sc-excerpt{font-size:11px;color:var(--text3);line-height:1.55}
+.sc-bar-row{display:flex;align-items:center;gap:5px;margin-top:7px}
+.sc-bar{flex:1;height:2px;background:var(--surface2);border-radius:1px;overflow:hidden}
+.sc-bar-fill{height:100%;background:var(--gold);border-radius:1px}
+.sc-pct{font-size:10px;color:var(--gold-dim);font-family:'JetBrains Mono',monospace}
+.empty-panel{font-size:12px;color:var(--text3);text-align:center;padding:24px 14px;line-height:1.6}
+
+/* STATS BAR */
+.stats-bar{padding:8px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.stat-row{display:flex;justify-content:space-between;font-size:11px}
+.stat-lbl{color:var(--text3)}
+.stat-val{color:var(--text2);font-family:'JetBrains Mono',monospace}
+
+/* TABS (panel) */
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.ptab{flex:1;padding:9px;font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.12s;border-bottom:2px solid transparent}
+.ptab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.ptab:hover:not(.active){color:var(--text2)}
+
+/* QUERY LOG */
+.query-log{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px}
+.qlog-item{background:var(--ink3);border:1px solid var(--border);border-radius:7px;padding:8px 10px;cursor:pointer;transition:all 0.12s}
+.qlog-item:hover{border-color:var(--border2)}
+.qlog-q{font-size:11px;color:var(--text2);margin-bottom:3px;line-height:1.4}
+.qlog-meta{display:flex;gap:8px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="logo">
+      <span style="font-size:22px">⚖</span>
+      <div class="logo-stack">
+        <span>TaxClear UAE</span>
+        <span class="logo-sub">AI Compliance Assistant</span>
+      </div>
+    </div>
+    <nav class="topnav">
+      <button class="tnav active" onclick="switchView('chat',this)">Chat</button>
+      <button class="tnav" onclick="switchView('checker',this)">CT Checker</button>
+      <button class="tnav" onclick="switchView('vat',this)">VAT Lookup</button>
+      <button class="tnav" onclick="switchView('deadlines',this)">Deadlines</button>
+    </nav>
+    <div class="top-right">
+      <span class="usage-txt" id="usageTxt">2 of 5 free queries used</span>
+      <span class="plan-pill">Free plan</span>
+      <button class="upgrade-btn-top">Upgrade Pro</button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div>
+        <div class="s-section-label">Tax topics</div>
+        <button class="s-item active" onclick="setTopic(this,'Corporate Tax')"><span class="s-dot gold"></span>Corporate Tax<span class="s-count">9%</span></button>
+        <button class="s-item" onclick="setTopic(this,'VAT')"><span class="s-dot green"></span>VAT<span class="s-count">5%</span></button>
+        <button class="s-item" onclick="setTopic(this,'Free Zones')"><span class="s-dot blue"></span>Free Zones<span class="s-count">0%</span></button>
+        <button class="s-item" onclick="setTopic(this,'Transfer Pricing')"><span class="s-dot dim"></span>Transfer Pricing</button>
+        <button class="s-item" onclick="setTopic(this,'Excise Tax')"><span class="s-dot dim"></span>Excise Tax</button>
+        <button class="s-item" onclick="setTopic(this,'Small Business Relief')"><span class="s-dot dim"></span>Small Business Relief</button>
+      </div>
+      <div>
+        <div class="s-section-label">FTA documents indexed</div>
+        <button class="s-item" style="font-size:11px;color:var(--text3)"><span class="s-dot gold"></span>CT Law — Federal DL 47/2022</button>
+        <button class="s-item" style="font-size:11px;color:var(--text3)"><span class="s-dot green"></span>VAT Law — Federal DL 8/2017</button>
+        <button class="s-item" style="font-size:11px;color:var(--text3)"><span class="s-dot blue"></span>FTA CT Guide v2.1</button>
+        <button class="s-item" style="font-size:11px;color:var(--text3)"><span class="s-dot dim"></span>Cabinet Decision 75/2023</button>
+        <button class="s-item" style="font-size:11px;color:var(--text3)"><span class="s-dot dim"></span>QFZP Conditions Guide</button>
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="upgrade-card">
+        <p>Upgrade to <strong>Pro</strong> for unlimited queries, PDF upload &amp; Arabic support</p>
+        <button class="upgrade-btn">AED 149 / month</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CHAT -->
+  <main class="main" id="chatView">
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-badge"><div class="rag-pulse"></div>RAG — grounded in FTA documents</div>
+        <h1>UAE Tax <em>Compliance</em><br>Made Simple</h1>
+        <p>Every answer is retrieved from official FTA documentation. Ask in plain English — get cited, grounded answers in seconds.</p>
+        <div class="suggestion-grid">
+          <div class="sug" onclick="ask(this)">
+            <div class="sug-tag">Corporate Tax</div>
+            <div class="sug-text">Do I need to register for CT if my revenue is AED 600,000?</div>
+          </div>
+          <div class="sug" onclick="ask(this)">
+            <div class="sug-tag">Free Zones</div>
+            <div class="sug-text">Does my DMCC company qualify for 0% corporate tax?</div>
+          </div>
+          <div class="sug" onclick="ask(this)">
+            <div class="sug-tag">VAT</div>
+            <div class="sug-text">What VAT rate applies to SaaS software sold to UAE clients?</div>
+          </div>
+          <div class="sug" onclick="ask(this)">
+            <div class="sug-tag">Deadlines</div>
+            <div class="sug-text">When is my CT return due if my financial year ends March 31?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CT CHECKER VIEW (hidden) -->
+    <div id="checkerView" style="display:none;flex:1;overflow-y:auto;padding:24px;max-width:600px;margin:0 auto;width:100%">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);margin-bottom:6px">CT Registration Checker</h2>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:20px">Answer 4 questions to find out if you must register for UAE Corporate Tax.</p>
+      <div id="checkerForm" style="display:flex;flex-direction:column;gap:14px">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:8px;font-weight:500">1. What is your annual revenue (AED)?</label>
+          <input type="number" id="revenue" placeholder="e.g. 800000" style="width:100%;background:var(--ink3);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:8px;font-weight:500">2. Entity type</label>
+          <select id="entityType" style="width:100%;background:var(--ink3);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none">
+            <option value="">Select...</option>
+            <option>Mainland LLC</option>
+            <option>Free Zone company</option>
+            <option>Sole establishment</option>
+            <option>Foreign branch</option>
+            <option>Natural person (freelancer)</option>
+          </select>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:8px;font-weight:500">3. Financial year end</label>
+          <select id="fyEnd" style="width:100%;background:var(--ink3);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none">
+            <option value="">Select...</option>
+            <option>31 December</option>
+            <option>31 March</option>
+            <option>30 June</option>
+            <option>30 September</option>
+          </select>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+          <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:8px;font-weight:500">4. Are you already VAT registered?</label>
+          <div style="display:flex;gap:8px">
+            <label style="flex:1;background:var(--ink3);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.12s" id="vatYes" onclick="selectVat('yes')">Yes</label>
+            <label style="flex:1;background:var(--ink3);border:1px solid var(--border);border-radius:7px;padding:9px;text-align:center;cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.12s" id="vatNo" onclick="selectVat('no')">No</label>
+          </div>
+        </div>
+        <button onclick="runChecker()" style="padding:12px;border-radius:8px;background:var(--gold);color:var(--ink);border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:0.03em">Check my CT obligation →</button>
+        <div id="checkerResult" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- VAT VIEW (hidden) -->
+    <div id="vatView" style="display:none;flex:1;overflow-y:auto;padding:24px;max-width:600px;margin:0 auto;width:100%">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);margin-bottom:6px">VAT Rate Lookup</h2>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:20px">Describe your product or service to find the correct UAE VAT treatment.</p>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <input type="text" id="vatInput" placeholder="e.g. online fitness coaching, medical services, exported software..." style="flex:1;background:var(--ink2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')lookupVat()">
+        <button onclick="lookupVat()" style="padding:10px 18px;border-radius:8px;background:var(--gold);color:var(--ink);border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer">Lookup</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px">
+        <div onclick="setVatInput('Residential property rent')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:11px;color:var(--text2);transition:all 0.12s" onmouseover="this.style.borderColor='var(--gold-dim)'" onmouseout="this.style.borderColor='var(--border)'">Residential rent</div>
+        <div onclick="setVatInput('Medical consultation services')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:11px;color:var(--text2);transition:all 0.12s" onmouseover="this.style.borderColor='var(--gold-dim)'" onmouseout="this.style.borderColor='var(--border)'">Medical services</div>
+        <div onclick="setVatInput('SaaS software exported to KSA')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:11px;color:var(--text2);transition:all 0.12s" onmouseover="this.style.borderColor='var(--gold-dim)'" onmouseout="this.style.borderColor='var(--border)'">Exported SaaS</div>
+        <div onclick="setVatInput('Restaurant food and beverages')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:11px;color:var(--text2);transition:all 0.12s" onmouseover="this.style.borderColor='var(--gold-dim)'" onmouseout="this.style.borderColor='var(--border)'">Restaurant / F&B</div>
+        <div onclick="setVatInput('International flight tickets')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:11px;color:var(--text2);transition:all 0.12s" onmouseover="this.style.borderColor='var(--gold-dim)'" onmouseout="this.style.borderColor='var(--border)'">Flight tickets</div>
+        <div onclick="setVatInput('Gold and precious metals')" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:11px;color:var(--text2);transition:all 0.12s" onmouseover="this.style.borderColor='var(--gold-dim)'" onmouseout="this.style.borderColor='var(--border)'">Gold & metals</div>
+      </div>
+      <div id="vatResult"></div>
+    </div>
+
+    <!-- DEADLINES VIEW (hidden) -->
+    <div id="deadlinesView" style="display:none;flex:1;overflow-y:auto;padding:24px;max-width:600px;margin:0 auto;width:100%">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);margin-bottom:6px">Compliance Calendar</h2>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:20px">Enter your financial year end to get your full CT compliance calendar.</p>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <select id="fySelect" style="flex:1;background:var(--ink2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none">
+          <option value="Dec">31 December (calendar year)</option>
+          <option value="Mar">31 March</option>
+          <option value="Jun">30 June</option>
+          <option value="Sep">30 September</option>
+        </select>
+        <button onclick="showCalendar()" style="padding:10px 18px;border-radius:8px;background:var(--gold);color:var(--ink);border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer">Generate</button>
+      </div>
+      <div id="calendarResult"></div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-wrap" id="chatInput">
+      <div class="input-box">
+        <textarea class="chat-ta" id="ta" placeholder="Ask about UAE Corporate Tax, VAT, free zones, deadlines..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMsg()">
+          <svg viewBox="0 0 14 14" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 7h12M8 2l5 5-5 5"/>
+          </svg>
+        </button>
+      </div>
+      <div class="hints">
+        <span class="hint" onclick="setHint(this)">CT registration threshold</span>
+        <span class="hint" onclick="setHint(this)">QFZP qualifying income rules</span>
+        <span class="hint" onclick="setHint(this)">Small Business Relief eligibility</span>
+        <span class="hint" onclick="setHint(this)">VAT on exported services</span>
+        <span class="hint" onclick="setHint(this)">Transfer pricing documentation</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="panel">
+    <div class="panel-hdr">
+      <h3>RAG Sources</h3>
+      <p>FTA documents retrieved per query</p>
+    </div>
+    <div class="panel-tabs">
+      <button class="ptab active" id="tabSrc" onclick="switchTab('src',this)">Sources</button>
+      <button class="ptab" id="tabLog" onclick="switchTab('log',this)">Query log</button>
+    </div>
+    <div class="rag-status" id="ragStatus">
+      <div class="rag-led" id="ragLed"></div>
+      <span id="ragTxt">Idle — awaiting query</span>
+    </div>
+
+    <!-- SOURCES TAB -->
+    <div id="srcTab">
+      <div class="source-list" id="sourceList">
+        <div class="empty-panel">Sources will appear here after you ask a question.<br><br>Each card shows the FTA document chunk retrieved by the vector search.</div>
+      </div>
+      <div class="stats-bar" id="statsBar" style="display:none">
+        <div class="stat-row"><span class="stat-lbl">Chunks searched</span><span class="stat-val" id="statChunks">—</span></div>
+        <div class="stat-row"><span class="stat-lbl">Top match score</span><span class="stat-val" id="statScore">—</span></div>
+        <div class="stat-row"><span class="stat-lbl">Response time</span><span class="stat-val" id="statTime">—</span></div>
+        <div class="stat-row"><span class="stat-lbl">Tokens used</span><span class="stat-val" id="statTokens">—</span></div>
+      </div>
+    </div>
+
+    <!-- LOG TAB -->
+    <div id="logTab" style="display:none">
+      <div class="query-log" id="queryLog">
+        <div class="empty-panel">Your query history will appear here.</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// ── STATE ──
+let queryCount = 0;
+let maxFree = 5;
+let currentTopic = 'Corporate Tax';
+let queryLog = [];
+let isLoading = false;
+let vatChoice = '';
+
+// ── SIMULATED FTA KNOWLEDGE BASE ──
+const FTA_KB = {
+  ct_registration: {
+    answer: `Under UAE Corporate Tax Law (Federal Decree-Law No. 47 of 2022), **every taxable person must register** for Corporate Tax before the end of their first tax period.
+
+The taxable person threshold for natural persons (freelancers, sole establishments) is **AED 1,000,000** in annual business income. For legal entities (LLCs, FZCOs, etc.), registration is mandatory regardless of revenue — there is no revenue threshold for legal entities.
+
+**Key registration deadlines** (Cabinet Decision 75/2023):
+- Existing entities: varied by licence issuance date
+- New entities: within 3 months of incorporation
+- Natural persons: before the end of the tax year in which AED 1M threshold is exceeded
+
+**Late registration penalty: AED 10,000** (one-time administrative penalty).
+
+Since your revenue of AED 600,000 as a legal entity means you are **required to register** for Corporate Tax.`,
+    sources: [
+      { title: "CT Law — Art. 51 (Registration)", ref: "Fed. DL 47/2022 · Art. 51", excerpt: "Every Taxable Person shall register for Corporate Tax with the Authority in the form and manner prescribed by the Authority...", score: 97 },
+      { title: "CT Registration Guide", ref: "FTA CT Guide v2.1 · §4.1", excerpt: "Legal entities incorporated or established in the UAE are required to register regardless of their revenue level...", score: 91 },
+      { title: "Administrative Penalties", ref: "Cabinet Decision 75/2023", excerpt: "Failure to register for Corporate Tax by the prescribed deadline shall attract an administrative penalty of AED 10,000...", score: 85 }
+    ]
+  },
+  dmcc_freezone: {
+    answer: `A DMCC company **may qualify** for the 0% Qualifying Free Zone Person (QFZP) rate under Article 18 of the CT Law, but must meet all of the following conditions:
+
+**QFZP Qualifying Conditions:**
+1. **Substance requirement** — maintains adequate physical presence in the free zone
+2. **Qualifying income** — derives income only from qualifying activities (trading with non-UAE parties, free zone companies, or specific domestic activities)
+3. **De minimis rule** — non-qualifying income does not exceed AED 5,000,000 or 5% of total revenue (whichever is lower)
+4. **No election for standard CT** — has not chosen to be subject to standard 9% CT
+
+**Qualifying income includes:**
+- Transactions with other free zone persons
+- Transactions with non-UAE persons
+- Income from owning/operating ships
+
+**Non-qualifying income (taxed at 9%):**
+- Sales to mainland UAE customers
+- Services provided to mainland entities
+- Passive income from UAE-sourced real estate
+
+If DMCC company sells primarily to mainland UAE clients, those revenues will be taxed at **9% CT** regardless of QFZP status.`,
+    sources: [
+      { title: "CT Law — Art. 18 (QFZP)", ref: "Fed. DL 47/2022 · Art. 18", excerpt: "A Qualifying Free Zone Person is a Free Zone Person that meets the conditions set out in this Article and any decision issued by the Cabinet...", score: 98 },
+      { title: "Ministerial Decision 139/2023", ref: "Min. Decision 139/2023 · §3", excerpt: "The de minimis threshold for non-qualifying income shall be the lower of AED 5,000,000 or 5% of total revenues...", score: 93 },
+      { title: "QFZP Conditions Guide", ref: "FTA QFZP Guide · §2.3", excerpt: "Adequate substance requires the Free Zone Person to have sufficient employees, assets and operational expenditure...", score: 88 }
+    ]
+  },
+  vat_saas: {
+    answer: `For UAE VAT purposes, the treatment of SaaS software depends on the **place of supply** and the customer's location.
+
+**SaaS sold to UAE business customers (B2B):**
+- Standard rate **5% VAT** applies
+- If customer is VAT-registered, reverse charge may apply
+- You must issue a proper tax invoice
+
+**SaaS exported to clients outside UAE (B2B export):**
+- **Zero-rated (0% VAT)** under Article 31 of the VAT Law
+- Conditions: services must be consumed outside UAE, customer must be outside UAE, and no direct/indirect benefit to UAE residents
+- You can still recover input VAT on your costs
+
+**SaaS to overseas individual consumers (B2C):**
+- Generally **zero-rated** if customer is genuinely overseas
+- Evidence of overseas customer location must be maintained
+
+**Important:** If your overseas customer has a UAE fixed establishment that benefits from the service, it may revert to 5% standard rate.
+
+Recommended action: Maintain clear records of customer location and consumption evidence for each transaction type.`,
+    sources: [
+      { title: "VAT Law — Art. 31 (Zero-rated)", ref: "Fed. DL 8/2017 · Art. 31", excerpt: "The export of services shall be zero-rated where the services are supplied to a recipient who does not have a place of residence in the UAE...", score: 95 },
+      { title: "VAT Executive Regulations", ref: "Cabinet Decision 52/2017 · Art. 52", excerpt: "Electronic services supplied to non-UAE recipients are treated as exported services subject to the conditions of Article 31...", score: 89 },
+      { title: "FTA VAT Guide — Digital Services", ref: "FTA VAT Guide DS · §3.2", excerpt: "SaaS and cloud-based software services follow the general place of supply rules for services under Article 30...", score: 83 }
+    ]
+  },
+  ct_deadline: {
+    answer: `For a financial year ending **31 March**, your UAE Corporate Tax deadlines are:
+
+**Tax Period:** 1 April — 31 March (12 months)
+
+**Key deadlines:**
+
+| Obligation | Deadline |
+|---|---|
+| CT Registration | Before end of first tax period |
+| Corporate Tax Return filing | **31 December** (9 months after FY end) |
+| CT Payment | **31 December** (same as filing) |
+| Transfer Pricing disclosure | With CT Return |
+
+**Example for FY ending 31 March 2025:**
+- CT Return due: **31 December 2025**
+- Tax payment due: **31 December 2025**
+
+**Late filing penalty:** AED 500/month for first 12 months, AED 1,000/month thereafter (Cabinet Decision 75/2023).
+
+**Late payment:** 2% of unpaid tax immediately, then 4% monthly after 1 month, 1% daily after 6 months.
+
+Recommendation: Set a reminder for **30 November** to allow a full month to prepare your return before the December 31 deadline.`,
+    sources: [
+      { title: "CT Law — Art. 53 (Filing)", ref: "Fed. DL 47/2022 · Art. 53", excerpt: "A Taxable Person shall file a Tax Return with the Authority within 9 months from the end of the relevant Tax Period...", score: 99 },
+      { title: "CT Law — Art. 55 (Payment)", ref: "Fed. DL 47/2022 · Art. 55", excerpt: "Corporate Tax shall be paid no later than the date on which the Tax Return for the relevant Tax Period is required to be filed...", score: 96 },
+      { title: "Penalties — Cabinet Decision", ref: "Cabinet Decision 75/2023 · §8", excerpt: "Late filing of the Corporate Tax Return shall attract an administrative penalty of AED 500 per month for the first 12 months...", score: 90 }
+    ]
+  },
+  default: {
+    answer: `Based on the UAE Federal Tax Authority documentation indexed in this system, here is a grounded answer to your question:
+
+The UAE Corporate Tax framework (effective June 2023) applies a **9% rate** on taxable income exceeding AED 375,000, with a **0% rate** on income up to that threshold. Free Zone Qualifying Persons may benefit from the **0% QFZP rate** on qualifying income subject to meeting substance and income conditions.
+
+For VAT, the standard rate remains **5%** with zero-rating applying to exported services, international transport, certain healthcare, and education supplies.
+
+For a precise answer to your specific situation, please provide more details about your entity type, revenue, and the specific tax matter you need clarity on.
+
+**Tip:** Try asking about a specific topic like CT registration, QFZP eligibility, VAT rates, or filing deadlines for more targeted answers.`,
+    sources: [
+      { title: "CT Law Overview", ref: "Fed. DL 47/2022 · Art. 3", excerpt: "Corporate Tax shall be imposed on Taxable Income at the rate of 0% for Taxable Income not exceeding AED 375,000...", score: 72 },
+      { title: "VAT Law Overview", ref: "Fed. DL 8/2017 · Art. 3", excerpt: "Tax shall be imposed on every Taxable Supply and Deemed Supply made by a Registrant...", score: 65 }
+    ]
+  }
+};
+
+function pickResponse(q) {
+  const ql = q.toLowerCase();
+  if (ql.includes('register') || ql.includes('600') || ql.includes('threshold') || ql.includes('registration')) return FTA_KB.ct_registration;
+  if (ql.includes('dmcc') || ql.includes('free zone') || ql.includes('qfzp') || ql.includes('0%') || ql.includes('freezone')) return FTA_KB.dmcc_freezone;
+  if (ql.includes('vat') || ql.includes('saas') || ql.includes('software') || ql.includes('rate')) return FTA_KB.vat_saas;
+  if (ql.includes('deadline') || ql.includes('return') || ql.includes('march') || ql.includes('due') || ql.includes('calendar')) return FTA_KB.ct_deadline;
+  return FTA_KB.default;
+}
+
+// ── CHAT ──
+function ask(el) {
+  const q = el.querySelector('.sug-text').textContent.trim();
+  document.getElementById('ta').value = q;
+  sendMsg();
+}
+
+function setHint(el) {
+  document.getElementById('ta').value = el.textContent.trim();
+  document.getElementById('ta').focus();
+}
+
+function setTopic(el, topic) {
+  document.querySelectorAll('.s-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  currentTopic = topic;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function sendMsg() {
+  const ta = document.getElementById('ta');
+  const q = ta.value.trim();
+  if (!q || isLoading) return;
+  if (queryCount >= maxFree) {
+    showUpgradePrompt(); return;
+  }
+  isLoading = true;
+  queryCount++;
+  document.getElementById('usageTxt').textContent = `${queryCount} of ${maxFree} free queries used`;
+  document.getElementById('welcome').style.display = 'none';
+  addUserMsg(q);
+  ta.value = ''; ta.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+  setRagStatus('searching');
+  showThinking();
+  clearSources();
+
+  const start = Date.now();
+  // Simulate RAG pipeline timing
+  setTimeout(() => setThinkingStep(1), 400);
+  setTimeout(() => setThinkingStep(2), 900);
+  setTimeout(() => setThinkingStep(3), 1400);
+  setTimeout(() => {
+    const resp = pickResponse(q);
+    const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+    removeThinking();
+    addBotMsg(resp.answer, resp.sources);
+    showSources(resp.sources, elapsed);
+    addToLog(q, resp.sources[0].ref, elapsed);
+    setRagStatus('done');
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+  }, 2000);
+}
+
+function addUserMsg(text) {
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="av usr">OF</div><div class="bubble">${esc(text)}</div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+let thinkingSteps = 0;
+function showThinking() {
+  thinkingSteps = 0;
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'thinking-bubble'; d.id = 'thinking';
+  d.innerHTML = `
+    <div class="av bot">T</div>
+    <div class="thinking-inner">
+      <div class="thinking-step active" id="ts1"><div class="step-dot active"></div>Embedding query into vector space...</div>
+      <div class="thinking-step" id="ts2"><div class="step-dot pending"></div>Searching FTA document chunks...</div>
+      <div class="thinking-step" id="ts3"><div class="step-dot pending"></div>Generating grounded answer...</div>
+      <div class="dots" id="tdots"><span></span><span></span><span></span></div>
+    </div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function setThinkingStep(n) {
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('ts'+i);
+    if (!el) return;
+    if (i < n) { el.classList.add('done'); el.classList.remove('active'); el.querySelector('.step-dot').className='step-dot done'; }
+    else if (i === n) { el.classList.add('active'); el.querySelector('.step-dot').className='step-dot active'; }
+  }
+  if (n >= 3) document.getElementById('tdots') && (document.getElementById('tdots').style.display='none');
+}
+
+function removeThinking() {
+  const el = document.getElementById('thinking');
+  if (el) el.remove();
+}
+
+function addBotMsg(text, sources) {
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg';
+  const chips = sources.map(s => `<div class="src-chip"><span class="art">${s.ref.split('·')[0].trim()}</span>${s.title}</div>`).join('');
+  const md = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>')
+    .replace(/\|([^|]+)\|([^|]+)\|/g, (m,a,b) => `<div style="display:flex;gap:8px;font-size:11px;margin:2px 0"><span style="color:var(--text2);min-width:140px">${a.trim()}</span><span style="color:var(--gold)">${b.trim()}</span></div>`);
+
+  d.innerHTML = `
+    <div class="av bot">T</div>
+    <div class="bubble">
+      <div class="ans-text">${md}</div>
+      <div class="ans-sources">
+        <div class="src-label">Retrieved sources</div>
+        <div class="src-chips">${chips}</div>
+        <div class="conf-row">
+          <span class="conf-lbl">Confidence</span>
+          <div class="conf-track"><div class="conf-fill" style="width:0%" id="cf${queryCount}"></div></div>
+          <span class="conf-val">${sources[0].score}%</span>
+        </div>
+      </div>
+      <div class="disclaimer">General information only. Not legal or tax advice. Consult a qualified UAE tax advisor for your specific situation.</div>
+    </div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    const cf = document.getElementById('cf'+queryCount);
+    if (cf) cf.style.width = sources[0].score + '%';
+  }, 100);
+}
+
+// ── SOURCES PANEL ──
+function clearSources() {
+  document.getElementById('sourceList').innerHTML = '<div class="empty-panel">Retrieving from FTA knowledge base...</div>';
+  document.getElementById('statsBar').style.display = 'none';
+}
+
+function showSources(sources, elapsed) {
+  const list = document.getElementById('sourceList');
+  list.innerHTML = sources.map((s, i) => `
+    <div class="src-card ${i===0?'top':''}">
+      <div class="sc-title">${s.title}</div>
+      <div class="sc-ref">${s.ref}</div>
+      <div class="sc-excerpt">${s.excerpt}</div>
+      <div class="sc-bar-row">
+        <div class="sc-bar"><div class="sc-bar-fill" style="width:${s.score}%"></div></div>
+        <span class="sc-pct">${s.score}%</span>
+      </div>
+    </div>`).join('');
+
+  const statsBar = document.getElementById('statsBar');
+  statsBar.style.display = 'flex';
+  document.getElementById('statChunks').textContent = '2,370';
+  document.getElementById('statScore').textContent = sources[0].score + '%';
+  document.getElementById('statTime').textContent = elapsed + 's';
+  document.getElementById('statTokens').textContent = '~' + (Math.floor(Math.random()*400)+800);
+}
+
+function setRagStatus(state) {
+  const el = document.getElementById('ragStatus');
+  const led = document.getElementById('ragLed');
+  const txt = document.getElementById('ragTxt');
+  if (state === 'searching') {
+    el.classList.add('active');
+    txt.textContent = 'RAG retrieval in progress...';
+  } else if (state === 'done') {
+    el.classList.add('active');
+    txt.textContent = 'Retrieval complete — sources loaded';
+  } else {
+    el.classList.remove('active');
+    txt.textContent = 'Idle — awaiting query';
+  }
+}
+
+// ── TABS ──
+function switchTab(tab, el) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('srcTab').style.display = tab === 'src' ? 'flex' : 'none';
+  document.getElementById('srcTab').style.flexDirection = 'column';
+  document.getElementById('logTab').style.display = tab === 'log' ? 'flex' : 'none';
+  document.getElementById('logTab').style.flexDirection = 'column';
+}
+
+function addToLog(q, ref, elapsed) {
+  queryLog.unshift({ q, ref, elapsed, time: new Date().toLocaleTimeString() });
+  renderLog();
+}
+
+function renderLog() {
+  const el = document.getElementById('queryLog');
+  if (!queryLog.length) { el.innerHTML = '<div class="empty-panel">No queries yet.</div>'; return; }
+  el.innerHTML = queryLog.map(l => `
+    <div class="qlog-item">
+      <div class="qlog-q">${esc(l.q)}</div>
+      <div class="qlog-meta"><span>${l.ref}</span><span>${l.elapsed}s</span><span>${l.time}</span></div>
+    </div>`).join('');
+}
+
+// ── VIEW SWITCHING ──
+function switchView(view, el) {
+  document.querySelectorAll('.tnav').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const views = ['chat','checker','vat','deadlines'];
+  views.forEach(v => {
+    const main = document.getElementById(v === 'chat' ? 'messages' : v+'View');
+    if (main) main.style.display = 'none';
+  });
+  document.getElementById('chatInput').style.display = view === 'chat' ? 'block' : 'none';
+  if (view === 'chat') {
+    document.getElementById('messages').style.display = 'flex';
+  } else {
+    document.getElementById(view+'View').style.display = 'flex';
+  }
+}
+
+// ── CT CHECKER ──
+function selectVat(v) {
+  vatChoice = v;
+  document.getElementById('vatYes').style.borderColor = v==='yes' ? 'var(--gold)' : 'var(--border)';
+  document.getElementById('vatYes').style.color = v==='yes' ? 'var(--gold)' : 'var(--text2)';
+  document.getElementById('vatNo').style.borderColor = v==='no' ? 'var(--gold)' : 'var(--border)';
+  document.getElementById('vatNo').style.color = v==='no' ? 'var(--gold)' : 'var(--text2)';
+}
+
+function runChecker() {
+  const rev = parseFloat(document.getElementById('revenue').value) || 0;
+  const entity = document.getElementById('entityType').value;
+  const fy = document.getElementById('fyEnd').value;
+  const res = document.getElementById('checkerResult');
+  if (!rev || !entity || !fy) { alert('Please fill in all fields.'); return; }
+
+  const isNaturalPerson = entity.includes('Natural') || entity.includes('freelancer');
+  const threshold = isNaturalPerson ? 1000000 : 0;
+  const mustRegister = isNaturalPerson ? rev >= threshold : true;
+  const taxable = rev > 375000;
+
+  res.style.display = 'block';
+  res.innerHTML = `
+    <div style="background:var(--${mustRegister?'red':'surface2'}-bg,var(--surface2));border:1px solid var(--${mustRegister?'red':'green'});border-radius:10px;padding:16px;margin-top:4px">
+      <div style="font-size:14px;font-weight:600;color:var(--${mustRegister?'red':'green'});margin-bottom:8px">${mustRegister ? '⚠ CT Registration Required' : '✓ Registration Not Yet Required'}</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7">
+        ${mustRegister
+          ? `As a <strong>${entity}</strong> with AED ${rev.toLocaleString()} revenue, you <strong>must register</strong> for Corporate Tax. ${isNaturalPerson?'Your revenue exceeds the AED 1,000,000 natural person threshold.':'Legal entities must register regardless of revenue.'}`
+          : `As a <strong>${entity}</strong> with AED ${rev.toLocaleString()} revenue, you are below the AED 1,000,000 threshold. Monitor your revenue and register before crossing the threshold.`
+        }<br><br>
+        <strong>Tax liability:</strong> ${taxable ? `AED ${rev.toLocaleString()} revenue — income above AED 375,000 taxable at <span style="color:var(--gold)">9% CT</span>` : 'Revenue below AED 375,000 — taxed at <span style="color:var(--green)">0% CT</span>'}<br>
+        <strong>FY end:</strong> ${fy} → CT return due <strong>${fy.includes('Dec')?'30 Sep':fy.includes('Mar')?'31 Dec':fy.includes('Jun')?'31 Mar':'30 Jun'}</strong> (9 months later)<br>
+        <strong>Late registration penalty:</strong> AED 10,000
+      </div>
+    </div>`;
+}
+
+// ── VAT LOOKUP ──
+function setVatInput(val) {
+  document.getElementById('vatInput').value = val;
+}
+
+function lookupVat() {
+  const q = document.getElementById('vatInput').value.trim();
+  if (!q) return;
+  const res = document.getElementById('vatResult');
+  const rates = {
+    'residential': { rate:'Exempt',color:'var(--blue)',art:'Art. 46',desc:'Residential property rental is exempt from UAE VAT. No VAT charged, no input VAT recovery on associated costs.'},
+    'medical': { rate:'Zero-rated (0%)',color:'var(--green)',art:'Art. 41',desc:'Healthcare services by licensed practitioners are zero-rated. You charge 0% but can recover input VAT.'},
+    'saas': { rate:'Zero-rated (0%) — if exported',color:'var(--green)',art:'Art. 31',desc:'SaaS exported to non-UAE clients is zero-rated. Standard 5% applies if consumed by UAE-based clients.'},
+    'restaurant': { rate:'Standard (5%)',color:'var(--gold)',art:'Art. 3',desc:'Food and beverage supplies at restaurants are subject to standard 5% VAT.'},
+    'flight': { rate:'Zero-rated (0%)',color:'var(--green)',art:'Art. 33',desc:'International passenger transport is zero-rated under the UAE VAT Law.'},
+    'gold': { rate:'Standard (5%) or Reverse Charge',color:'var(--gold)',art:'Art. 48',desc:'Gold and precious metals may fall under the Designated Zone rules or standard rate depending on transaction type.'},
+  };
+  const ql = q.toLowerCase();
+  let match = { rate:'Standard (5%)', color:'var(--gold)', art:'Art. 3', desc:`Standard 5% VAT applies to most goods and services in the UAE unless specifically zero-rated or exempt. For "${q}", the standard 5% rate most likely applies.` };
+  if(ql.includes('resid')||ql.includes('rent')) match=rates.residential;
+  else if(ql.includes('medical')||ql.includes('health')||ql.includes('doctor')) match=rates.medical;
+  else if(ql.includes('saas')||ql.includes('software')||ql.includes('cloud')||ql.includes('export')) match=rates.saas;
+  else if(ql.includes('restaurant')||ql.includes('food')||ql.includes('beverage')) match=rates.restaurant;
+  else if(ql.includes('flight')||ql.includes('airline')||ql.includes('transport')||ql.includes('ticket')) match=rates.flight;
+  else if(ql.includes('gold')||ql.includes('metal')) match=rates.gold;
+
+  res.innerHTML = `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.07em">VAT treatment</div>
+      <div style="font-size:22px;font-family:'Cormorant Garamond',serif;font-weight:600;color:${match.color};margin-bottom:10px">${match.rate}</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px">${match.desc}</div>
+      <div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">Source: UAE VAT Law ${match.art}</div>
+    </div>`;
+}
+
+// ── DEADLINES ──
+function showCalendar() {
+  const fy = document.getElementById('fySelect').value;
+  const map = {
+    Dec: { end:'31 Dec', return:'30 Sep', label:'31 December' },
+    Mar: { end:'31 Mar', return:'31 Dec', label:'31 March' },
+    Jun: { end:'30 Jun', return:'31 Mar', label:'30 June' },
+    Sep: { end:'30 Sep', return:'30 Jun', label:'30 September' },
+  };
+  const m = map[fy];
+  document.getElementById('calendarResult').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${[
+        {label:'Financial year ends', date:m.end, color:'var(--text2)', note:'Your tax period closes'},
+        {label:'CT Return filing deadline', date:m.return+' (+9mo)', color:'var(--gold)', note:'File EmaraTax CT Return'},
+        {label:'CT Payment deadline', date:m.return+' (+9mo)', color:'var(--gold)', note:'Pay Corporate Tax due'},
+        {label:'Transfer pricing disclosure', date:m.return+' (+9mo)', color:'var(--text2)', note:'If related-party transactions exceed AED 40M'},
+        {label:'Late filing penalty starts', date:'Day after filing deadline', color:'var(--red)', note:'AED 500/month for first year'},
+      ].map(r => `
+        <div style="display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:12px 14px">
+          <div style="width:8px;height:8px;border-radius:50%;background:${r.color};flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px">${r.label}</div>
+            <div style="font-size:11px;color:var(--text3)">${r.note}</div>
+          </div>
+          <div style="font-size:12px;color:${r.color};font-family:'JetBrains Mono',monospace;text-align:right;font-weight:500">${r.date}</div>
+        </div>`).join('')}
+      <div style="font-size:11px;color:var(--text3);padding:4px 2px">Based on FY end: ${m.label}. Source: UAE CT Law Art. 53 &amp; Cabinet Decision 75/2023.</div>
+    </div>`;
+}
+
+function showUpgradePrompt() {
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg';
+  d.innerHTML = `
+    <div class="av bot">T</div>
+    <div class="bubble" style="background:var(--gold-bg);border-color:var(--gold-dim)">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);margin-bottom:6px">Free query limit reached</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px">You've used all 5 free queries. Upgrade to Pro for unlimited queries, PDF document upload, Arabic language support, and the full FTA knowledge base.</div>
+      <button style="padding:9px 18px;border-radius:7px;background:var(--gold);color:var(--ink);border:none;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Upgrade to Pro — AED 149/month</button>
+    </div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

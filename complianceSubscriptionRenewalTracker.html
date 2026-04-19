@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComplianceSync — AI Compliance Renewal Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0a0a0f;
+    --ink-2: #2a2a35;
+    --ink-3: #6b6b7a;
+    --ink-4: #9999a8;
+    --surface: #f5f4f0;
+    --surface-2: #eeecea;
+    --surface-3: #e4e2de;
+    --white: #ffffff;
+    --accent: #1a3a5c;
+    --accent-2: #2d5f9e;
+    --accent-light: #e8f0f9;
+    --gold: #c49a3c;
+    --gold-light: #faf3e4;
+    --green: #1a5c3a;
+    --green-light: #e8f5ee;
+    --red: #8b1a1a;
+    --red-light: #faeaea;
+    --amber: #7a4a0a;
+    --amber-light: #fdf3e3;
+    --border: rgba(10,10,15,0.1);
+    --border-strong: rgba(10,10,15,0.18);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1,h2,h3,h4,h5 { font-family: 'Syne', sans-serif; font-weight: 700; line-height: 1.15; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(245,244,240,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
+  .nav-logo span { color: var(--accent-2); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--ink-3); text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--ink); color: var(--white);
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 20px; border-radius: 6px; text-decoration: none; letter-spacing: 0.02em;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--accent-2); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    padding: 120px 2.5rem 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent-2);
+    background: var(--accent-light); border: 1px solid rgba(45,95,158,0.2);
+    padding: 5px 12px; border-radius: 20px; margin-bottom: 1.5rem;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-2); display: block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent-2); }
+  .hero-desc {
+    font-size: 18px; color: var(--ink-3); line-height: 1.7;
+    margin-bottom: 2.5rem; font-weight: 300;
+  }
+  .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--ink); color: var(--white);
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
+    padding: 13px 28px; border-radius: 8px; text-decoration: none;
+    letter-spacing: 0.02em; transition: all 0.2s; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--accent-2); transform: translateY(-1px); }
+  .btn-secondary {
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--ink-3); text-decoration: none; padding: 13px 0;
+    border-bottom: 1px solid var(--border-strong); letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--ink); }
+
+  /* ─── HERO DASHBOARD MOCKUP ─── */
+  .hero-mockup {
+    background: var(--white);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(10,10,15,0.12), 0 4px 16px rgba(10,10,15,0.06);
+  }
+  .mockup-bar {
+    background: var(--ink); padding: 12px 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .mockup-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); margin-left: auto; margin-right: auto; letter-spacing: 0.05em; }
+  .mockup-body { padding: 20px; }
+  .mockup-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .mockup-header h3 { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+  .m-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.04em; }
+  .m-badge.red { background: var(--red-light); color: var(--red); }
+  .m-badge.green { background: var(--green-light); color: var(--green); }
+  .m-badge.amber { background: var(--amber-light); color: var(--amber); }
+  .m-badge.blue { background: var(--accent-light); color: var(--accent); }
+
+  .m-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .m-stat { background: var(--surface); border-radius: 8px; padding: 12px; }
+  .m-stat-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.04em; }
+  .m-stat-label { font-size: 10px; color: var(--ink-4); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 2px; }
+
+  .m-table { width: 100%; border-collapse: collapse; }
+  .m-table th { font-size: 10px; font-weight: 600; color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+  .m-table td { font-size: 11px; padding: 8px 8px; border-bottom: 1px solid var(--border); color: var(--ink-2); }
+  .m-table tr:last-child td { border-bottom: none; }
+  .m-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+  .m-days { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; }
+  .m-days.urgent { color: var(--red); }
+  .m-days.warn { color: var(--amber); }
+  .m-days.ok { color: var(--green); }
+
+  /* ─── SECTION SHELL ─── */
+  section { padding: 96px 2.5rem; }
+  .container { max-width: 1280px; margin: 0 auto; }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-4); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    font-weight: 800; letter-spacing: -0.035em;
+    color: var(--ink); margin-bottom: 1rem;
+  }
+  .section-sub { font-size: 17px; color: var(--ink-3); line-height: 1.7; font-weight: 300; max-width: 560px; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ─── PROBLEM ─── */
+  .problem-section { background: var(--ink); }
+  .problem-section .section-label { color: rgba(255,255,255,0.35); }
+  .problem-section .section-title { color: var(--white); }
+  .problem-section .section-sub { color: rgba(255,255,255,0.5); }
+  .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; margin-top: 3rem; }
+  .problem-card { background: var(--ink); padding: 2rem; }
+  .problem-icon { font-size: 28px; margin-bottom: 1rem; }
+  .problem-card h4 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+  .problem-card p { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+  /* ─── PRODUCT SCREENS ─── */
+  .screens-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .screen-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem; position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .screen-card:hover { border-color: var(--border-strong); box-shadow: 0 8px 32px rgba(10,10,15,0.07); }
+  .screen-num {
+    position: absolute; top: 1.75rem; right: 1.75rem;
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    color: var(--ink-4); letter-spacing: 0.08em;
+  }
+  .screen-card h4 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+  .screen-card ul { list-style: none; }
+  .screen-card ul li {
+    font-size: 13.5px; color: var(--ink-3); padding: 5px 0;
+    border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 8px;
+  }
+  .screen-card ul li:last-child { border-bottom: none; }
+  .screen-card ul li::before { content: '→'; color: var(--accent-2); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .screen-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px;
+    border-radius: 4px; margin-bottom: 1rem;
+  }
+  .screen-tag.dash { background: var(--accent-light); color: var(--accent); }
+  .screen-tag.track { background: var(--green-light); color: var(--green); }
+  .screen-tag.renew { background: var(--amber-light); color: var(--amber); }
+  .screen-tag.agency { background: #f0e8f5; color: #5a1a7a; }
+  .screen-tag.notif { background: var(--red-light); color: var(--red); }
+  .screen-tag.settings { background: var(--surface-2); color: var(--ink-3); }
+
+  /* ─── TECH STACK ─── */
+  .tech-section { background: var(--surface-2); }
+  .tech-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .tech-col h4 {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-4); margin-bottom: 1rem;
+    padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-strong);
+  }
+  .tech-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .tech-item:last-child { border-bottom: none; }
+  .tech-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--ink); display: block; }
+  .tech-reason { font-size: 12px; color: var(--ink-4); line-height: 1.4; display: block; margin-top: 2px; }
+  .tech-pill {
+    flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px;
+    background: var(--white); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  /* ─── PRICING ─── */
+  .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 3rem; }
+  .price-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem; position: relative;
+  }
+  .price-card.featured {
+    border: 2px solid var(--accent-2);
+    background: var(--ink);
+  }
+  .price-card.featured .price-tier { color: rgba(255,255,255,0.5); }
+  .price-card.featured .price-amount { color: var(--white); }
+  .price-card.featured .price-period { color: rgba(255,255,255,0.4); }
+  .price-card.featured .price-target { color: rgba(255,255,255,0.6); }
+  .price-card.featured .price-feature { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.1); }
+  .price-card.featured .price-feature::before { color: rgba(255,255,255,0.4); }
+  .featured-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent-2); color: var(--white);
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 4px 12px; border-radius: 20px;
+  }
+  .price-tier { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-4); margin-bottom: 0.75rem; }
+  .price-amount { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--ink); letter-spacing: -0.05em; line-height: 1; }
+  .price-period { font-size: 13px; color: var(--ink-4); margin-bottom: 0.25rem; }
+  .price-target { font-size: 13px; color: var(--ink-3); margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .price-feature { font-size: 13px; color: var(--ink-3); padding: 5px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+  .price-feature:last-of-type { border-bottom: none; }
+  .price-feature::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .mrr-note { margin-top: 2.5rem; background: var(--gold-light); border: 1px solid rgba(196,154,60,0.25); border-radius: 10px; padding: 1.25rem 1.75rem; }
+  .mrr-note p { font-size: 14px; color: var(--amber); font-weight: 500; }
+  .mrr-note strong { font-family: 'Syne', sans-serif; font-weight: 700; }
+
+  /* ─── MARKETS ─── */
+  .markets-split { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; }
+  .market-block { }
+  .market-flag { font-size: 32px; margin-bottom: 1rem; }
+  .market-block h3 { font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 0.5rem; letter-spacing: -0.03em; }
+  .market-block > p { font-size: 14px; color: var(--ink-3); margin-bottom: 1.5rem; line-height: 1.6; }
+  .icp-block { background: var(--surface-2); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+  .icp-block h5 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-4); margin-bottom: 0.75rem; }
+  .icp-block p { font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+  .market-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+  .market-tag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: var(--white); border: 1px solid var(--border-strong); color: var(--ink-3); letter-spacing: 0.03em; }
+
+  /* ─── GAPS ─── */
+  .gaps-section { background: var(--ink); }
+  .gaps-section .section-title { color: var(--white); }
+  .gaps-section .section-label { color: rgba(255,255,255,0.3); }
+  .gaps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; margin-top: 3rem; }
+  .gap-card { background: var(--ink); padding: 2rem; }
+  .gap-num { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; color: rgba(255,255,255,0.06); line-height: 1; margin-bottom: 0.75rem; }
+  .gap-card h4 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+  .gap-card p { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+
+  /* ─── ROADMAP ─── */
+  .roadmap-track { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 3rem; position: relative; }
+  .roadmap-track::before {
+    content: ''; position: absolute;
+    top: 28px; left: calc(12.5%); right: calc(12.5%);
+    height: 2px; background: var(--border-strong); z-index: 0;
+  }
+  .phase-card { padding: 0 1rem; position: relative; z-index: 1; }
+  .phase-dot {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--white); border: 2px solid var(--border-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800;
+    color: var(--ink); margin: 0 auto 1rem;
+    position: relative;
+  }
+  .phase-card.active .phase-dot { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .phase-timeline { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-4); margin-bottom: 0.5rem; text-align: center; }
+  .phase-card h4 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 0.5rem; text-align: center; letter-spacing: -0.02em; }
+  .phase-card p { font-size: 12.5px; color: var(--ink-3); line-height: 1.5; text-align: center; }
+
+  /* ─── RISKS ─── */
+  .risks-table { width: 100%; border-collapse: collapse; margin-top: 2.5rem; }
+  .risks-table th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-4); padding: 10px 16px; text-align: left; border-bottom: 2px solid var(--border-strong); }
+  .risks-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--ink-2); vertical-align: top; }
+  .risks-table tr:last-child td { border-bottom: none; }
+  .risks-table tr:hover td { background: var(--surface-2); }
+  .risk-label { font-weight: 600; color: var(--ink); }
+
+  /* ─── MVP ─── */
+  .mvp-section { background: var(--accent); }
+  .mvp-section .section-label { color: rgba(255,255,255,0.4); }
+  .mvp-section .section-title { color: var(--white); }
+  .mvp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; }
+  .mvp-col h4 { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 1rem; letter-spacing: -0.01em; }
+  .mvp-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .mvp-item:last-child { border-bottom: none; }
+  .mvp-check { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 10px; color: rgba(255,255,255,0.7); flex-shrink: 0; margin-top: 1px; }
+  .mvp-item span { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink-2); padding: 2.5rem;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: rgba(255,255,255,0.3); }
+  footer strong { color: rgba(255,255,255,0.6); font-family: 'Syne', sans-serif; }
+
+  /* ─── ANIMATIONS ─── */
+  .fade-in { opacity: 0; transform: translateY(20px); animation: fadeIn 0.6s ease forwards; }
+  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+  .fade-in:nth-child(1) { animation-delay: 0.1s; }
+  .fade-in:nth-child(2) { animation-delay: 0.2s; }
+  .fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .fade-in:nth-child(4) { animation-delay: 0.4s; }
+  .fade-in:nth-child(5) { animation-delay: 0.5s; }
+  .fade-in:nth-child(6) { animation-delay: 0.6s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 3rem; padding: 100px 1.5rem 60px; }
+    section { padding: 64px 1.5rem; }
+    .problem-grid, .gaps-grid { grid-template-columns: 1fr; }
+    .screens-grid { grid-template-columns: 1fr; }
+    .tech-cols { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr 1fr; }
+    .markets-split { grid-template-columns: 1fr; }
+    .roadmap-track { grid-template-columns: 1fr 1fr; }
+    .roadmap-track::before { display: none; }
+    .mvp-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    .roadmap-track { grid-template-columns: 1fr; }
+    .m-stat-row { grid-template-columns: repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Compliance<span>Sync</span></div>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#product">Product</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#markets">Markets</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+  <a href="#pricing" class="nav-cta">View Pricing</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">SaaS Product Plan · 2025</div>
+    <h1>Compliance renewals,<br><em>finally under control</em></h1>
+    <p class="hero-desc">ComplianceSync helps regulated businesses in healthcare, fintech, and HR track and complete their compliance renewal obligations — without missing deadlines or hiring a consultant.</p>
+    <div class="hero-actions">
+      <a href="#product" class="btn-primary">Explore the Product</a>
+      <a href="#pricing" class="btn-secondary">See Pricing →</a>
+    </div>
+  </div>
+  <div class="hero-mockup">
+    <div class="mockup-bar">
+      <div class="mockup-dot" style="background:#ff5f57"></div>
+      <div class="mockup-dot" style="background:#febc2e"></div>
+      <div class="mockup-dot" style="background:#28c840"></div>
+      <div class="mockup-title">ComplianceSync Dashboard</div>
+    </div>
+    <div class="mockup-body">
+      <div class="mockup-header">
+        <h3>Compliance Overview</h3>
+        <span class="m-badge red">3 Urgent</span>
+      </div>
+      <div class="m-stat-row">
+        <div class="m-stat">
+          <div class="m-stat-num">14</div>
+          <div class="m-stat-label">Active tracks</div>
+        </div>
+        <div class="m-stat">
+          <div class="m-stat-num" style="color:#8b1a1a">3</div>
+          <div class="m-stat-label">Due &lt;30 days</div>
+        </div>
+        <div class="m-stat">
+          <div class="m-stat-num" style="color:#1a5c3a">9</div>
+          <div class="m-stat-label">Up to date</div>
+        </div>
+      </div>
+      <table class="m-table">
+        <thead>
+          <tr>
+            <th>Compliance</th>
+            <th>Industry</th>
+            <th>Status</th>
+            <th>Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="m-dot" style="background:#8b1a1a"></span>HIPAA Annual Review</td>
+            <td>Healthcare</td>
+            <td><span class="m-badge red">Overdue</span></td>
+            <td><span class="m-days urgent">−4 days</span></td>
+          </tr>
+          <tr>
+            <td><span class="m-dot" style="background:#7a4a0a"></span>SOC 2 Type II</td>
+            <td>Fintech</td>
+            <td><span class="m-badge amber">In Progress</span></td>
+            <td><span class="m-days warn">18 days</span></td>
+          </tr>
+          <tr>
+            <td><span class="m-dot" style="background:#7a4a0a"></span>NYC LL144 Bias Audit</td>
+            <td>HR Tech</td>
+            <td><span class="m-badge amber">Pending</span></td>
+            <td><span class="m-days warn">26 days</span></td>
+          </tr>
+          <tr>
+            <td><span class="m-dot" style="background:#1a5c3a"></span>PCI-DSS Renewal</td>
+            <td>Fintech</td>
+            <td><span class="m-badge green">Complete</span></td>
+            <td><span class="m-days ok">94 days</span></td>
+          </tr>
+          <tr>
+            <td><span class="m-dot" style="background:#1a3a5c"></span>UAE PDPL Review</td>
+            <td>Healthcare</td>
+            <td><span class="m-badge blue">Scheduled</span></td>
+            <td><span class="m-days ok">112 days</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PROBLEM -->
+<section class="problem-section" id="problem">
+  <div class="container">
+    <p class="section-label">The Problem</p>
+    <h2 class="section-title" style="color:white">Compliance is broken<br>for regulated SMBs</h2>
+    <p class="section-sub">Enterprise GRC tools cost $10K–$20K/month. Spreadsheets miss deadlines. One lapsed renewal = fines, suspended licences, or reputational damage.</p>
+    <div class="problem-grid">
+      <div class="problem-card fade-in">
+        <div class="problem-icon">📋</div>
+        <h4>No affordable tooling</h4>
+        <p>Enterprise platforms like OneTrust and Vanta start at $10K+/month. SMBs fall back on spreadsheets and calendar reminders that carry no process context.</p>
+      </div>
+      <div class="problem-card fade-in">
+        <div class="problem-icon">🌐</div>
+        <h4>Patchwork of regulations</h4>
+        <p>A healthcare clinic in California with an AI scheduling tool faces HIPAA, state AI law, ONC certification, and JCAHO accreditation — all with different renewal cycles.</p>
+      </div>
+      <div class="problem-card fade-in">
+        <div class="problem-icon">⚠️</div>
+        <h4>High stakes for missing deadlines</h4>
+        <p>EU AI Act penalties reach €35M or 7% of global turnover. HIPAA fines run up to $1.9M per violation category. Missing a SOC 2 renewal can kill enterprise deals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section id="product">
+  <div class="container">
+    <p class="section-label">The Product</p>
+    <h2 class="section-title">Six screens that run<br>your compliance operation</h2>
+    <p class="section-sub">From deadline tracking to document vault to one-click audit reports — everything in one place.</p>
+    <div class="screens-grid">
+      <div class="screen-card fade-in">
+        <span class="screen-num">01</span>
+        <span class="screen-tag dash">Dashboard</span>
+        <h4>Compliance Health Overview</h4>
+        <ul>
+          <li>Compliance health score per agency (Red / Amber / Green)</li>
+          <li>Upcoming renewals in next 30 / 60 / 90 days</li>
+          <li>Overdue items banner with escalation prompt</li>
+          <li>Quick-add renewal button</li>
+        </ul>
+      </div>
+      <div class="screen-card fade-in">
+        <span class="screen-num">02</span>
+        <span class="screen-tag track">Tracker</span>
+        <h4>Compliance Tracker</h4>
+        <ul>
+          <li>Table: Compliance | Industry | Jurisdiction | Due date | Owner | Status</li>
+          <li>Filter by industry, status, urgency, assigned user</li>
+          <li>Calendar view toggle for timeline visibility</li>
+          <li>Days-remaining countdown per item</li>
+        </ul>
+      </div>
+      <div class="screen-card fade-in">
+        <span class="screen-num">03</span>
+        <span class="screen-tag renew">Renewal</span>
+        <h4>Renewal Detail Page</h4>
+        <ul>
+          <li>Pre-loaded step-by-step renewal checklist per compliance type</li>
+          <li>Document vault — upload & version-control evidence files</li>
+          <li>Assignee + due date per checklist task</li>
+          <li>One-click PDF export for regulators</li>
+        </ul>
+      </div>
+      <div class="screen-card fade-in">
+        <span class="screen-num">04</span>
+        <span class="screen-tag agency">Agency Mgmt</span>
+        <h4>Agency Management</h4>
+        <ul>
+          <li>All client agencies in one sidebar (Consultant tier)</li>
+          <li>Per-agency compliance health overview</li>
+          <li>White-label toggle per client</li>
+          <li>Client-facing report generation</li>
+        </ul>
+      </div>
+      <div class="screen-card fade-in">
+        <span class="screen-num">05</span>
+        <span class="screen-tag notif">Notifications</span>
+        <h4>Notifications Centre</h4>
+        <ul>
+          <li>Alerts at 90 / 60 / 30 / 7 days before expiry</li>
+          <li>Escalation chain config — notify right person if no action</li>
+          <li>Email + WhatsApp/SMS channel settings</li>
+          <li>Event-triggered alerts (e.g. AI model update → HIPAA review)</li>
+        </ul>
+      </div>
+      <div class="screen-card fade-in">
+        <span class="screen-num">06</span>
+        <span class="screen-tag settings">Settings</span>
+        <h4>Settings & Compliance DB</h4>
+        <ul>
+          <li>Industry selector: Healthcare / Fintech / HR / Custom</li>
+          <li>Jurisdiction: US state-level / UAE / KSA / EU</li>
+          <li>Auto-populated renewal catalogue on selection</li>
+          <li>Team member roles & permissions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TECH STACK -->
+<section class="tech-section" id="stack">
+  <div class="container">
+    <p class="section-label">Technology Stack</p>
+    <h2 class="section-title">Built on a proven,<br>lean stack</h2>
+    <p class="section-sub">No exotic choices. Every technology chosen for speed of development, reliability at SMB scale, and existing team familiarity.</p>
+    <div class="tech-cols">
+      <div>
+        <h4>Backend</h4>
+        <div class="tech-item"><div class="tech-pill">🟢</div><div><span class="tech-name">Node.js + Express</span><span class="tech-reason">Existing strength, fast API development</span></div></div>
+        <div class="tech-item"><div class="tech-pill">⚡</div><div><span class="tech-name">Supabase (PostgreSQL)</span><span class="tech-reason">Multi-tenancy via RLS, built-in auth, file storage</span></div></div>
+        <div class="tech-item"><div class="tech-pill">🤖</div><div><span class="tech-name">Claude API</span><span class="tech-reason">Obligation mapping, Q&A, compliance doc drafting</span></div></div>
+        <div class="tech-item"><div class="tech-pill">📧</div><div><span class="tech-name">Resend + Twilio</span><span class="tech-reason">Email + WhatsApp/SMS alerts at SMB scale</span></div></div>
+        <div class="tech-item"><div class="tech-pill">📄</div><div><span class="tech-name">Puppeteer / pdfkit</span><span class="tech-reason">Audit-ready compliance report generation</span></div></div>
+        <div class="tech-item"><div class="tech-pill">💳</div><div><span class="tech-name">Stripe</span><span class="tech-reason">Subscription billing, multi-currency (USD + AED/SAR)</span></div></div>
+      </div>
+      <div>
+        <h4>Frontend</h4>
+        <div class="tech-item"><div class="tech-pill">⚛️</div><div><span class="tech-name">React + Vite</span><span class="tech-reason">Fast, component-driven UI development</span></div></div>
+        <div class="tech-item"><div class="tech-pill">🎨</div><div><span class="tech-name">Tailwind CSS</span><span class="tech-reason">Rapid, consistent UI styling</span></div></div>
+        <div class="tech-item"><div class="tech-pill">📊</div><div><span class="tech-name">Recharts</span><span class="tech-reason">Compliance health dashboards and charts</span></div></div>
+        <div class="tech-item"><div class="tech-pill">🗃️</div><div><span class="tech-name">Zustand</span><span class="tech-reason">Lightweight global state management</span></div></div>
+        <div class="tech-item"><div class="tech-pill">⏰</div><div><span class="tech-name">node-cron</span><span class="tech-reason">Deadline scanning, scheduled alert triggers</span></div></div>
+      </div>
+      <div>
+        <h4>Infrastructure</h4>
+        <div class="tech-item"><div class="tech-pill">🚂</div><div><span class="tech-name">Railway / Render</span><span class="tech-reason">Familiar hosting, affordable at startup scale</span></div></div>
+        <div class="tech-item"><div class="tech-pill">🔍</div><div><span class="tech-name">Sentry</span><span class="tech-reason">Error tracking and alerting</span></div></div>
+        <div class="tech-item"><div class="tech-pill">📈</div><div><span class="tech-name">PostHog</span><span class="tech-reason">Product analytics and funnel tracking</span></div></div>
+        <div class="tech-item"><div class="tech-pill">⚙️</div><div><span class="tech-name">GitHub Actions</span><span class="tech-reason">Automated CI/CD deploy pipeline</span></div></div>
+        <div class="tech-item"><div class="tech-pill">🔐</div><div><span class="tech-name">Supabase Auth</span><span class="tech-reason">JWT, OAuth, row-level security per agency</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <p class="section-label">Subscription Model</p>
+    <h2 class="section-title">Four tiers, one<br>clear growth path</h2>
+    <p class="section-sub">From solo clinic to compliance consultant managing 10+ clients. Every tier replaces a spreadsheet or a $5K–$15K consultant engagement.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount">$49</div>
+        <div class="price-period">/month</div>
+        <div class="price-target">Solo clinic or small firm</div>
+        <div class="price-feature">1 agency workspace</div>
+        <div class="price-feature">3 compliance tracks</div>
+        <div class="price-feature">Deadline reminders</div>
+        <div class="price-feature">Email alerts</div>
+      </div>
+      <div class="price-card featured">
+        <div class="featured-badge">Most Popular</div>
+        <div class="price-tier">Professional</div>
+        <div class="price-amount">$149</div>
+        <div class="price-period">/month</div>
+        <div class="price-target">Growing SMB</div>
+        <div class="price-feature">1 agency workspace</div>
+        <div class="price-feature">Unlimited compliance tracks</div>
+        <div class="price-feature">Full process management</div>
+        <div class="price-feature">Document vault</div>
+        <div class="price-feature">PDF audit export</div>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Consultant</div>
+        <div class="price-amount">$399</div>
+        <div class="price-period">/month</div>
+        <div class="price-target">Compliance consultants</div>
+        <div class="price-feature">Up to 10 client agencies</div>
+        <div class="price-feature">White-label dashboard</div>
+        <div class="price-feature">Client reporting</div>
+        <div class="price-feature">WhatsApp/SMS alerts</div>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-amount">$999<span style="font-size:20px">+</span></div>
+        <div class="price-period">/month</div>
+        <div class="price-target">Mid-market firms</div>
+        <div class="price-feature">Unlimited agencies</div>
+        <div class="price-feature">SSO + API access</div>
+        <div class="price-feature">Custom integrations</div>
+        <div class="price-feature">Dedicated onboarding</div>
+      </div>
+    </div>
+    <div class="mrr-note">
+      <p><strong>Revenue milestones:</strong> &nbsp;50 Professional customers → $7,500 MRR &nbsp;·&nbsp; 20 Consultant customers → $7,980 MRR &nbsp;·&nbsp; 10 Enterprise customers → $9,990 MRR</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- MARKETS -->
+<section id="markets">
+  <div class="container">
+    <p class="section-label">Target Markets</p>
+    <h2 class="section-title">US first. Middle East<br>as Phase 3 expansion.</h2>
+    <p class="section-sub">Two markets with different entry dynamics — both underserved by existing compliance tooling.</p>
+    <div class="markets-split">
+      <div class="market-block">
+        <div class="market-flag">🇺🇸</div>
+        <h3>United States</h3>
+        <p>HIPAA, SOC 2, NYC LL144, Colorado AI Act — a layered patchwork of obligations with no affordable unified tracker. SMBs in healthcare, fintech, and HR are the most exposed segment.</p>
+        <div class="icp-block">
+          <h5>Ideal Customer Profile</h5>
+          <p>Healthcare clinic operator or fintech CTO/COO, 10–100 staff, currently managing renewals on spreadsheets. Acutely aware of the risk. No compliance staff.</p>
+        </div>
+        <div class="icp-block">
+          <h5>Go-to-Market</h5>
+          <p>Self-serve freemium via ProductHunt launch. SEO content targeting "HIPAA renewal checklist" queries. LinkedIn outreach to healthcare ops and fintech COOs.</p>
+        </div>
+        <div class="market-tags">
+          <span class="market-tag">HIPAA</span>
+          <span class="market-tag">SOC 2</span>
+          <span class="market-tag">PCI-DSS</span>
+          <span class="market-tag">NYC LL144</span>
+          <span class="market-tag">Colorado AI Act</span>
+          <span class="market-tag">EEOC</span>
+        </div>
+      </div>
+      <div class="market-block">
+        <div class="market-flag">🇦🇪</div>
+        <h3>Middle East (GCC)</h3>
+        <p>Saudi Vision 2030 is driving a wave of international market entrants who need dual-jurisdiction compliance. No tool covers UAE PDPL, Saudi NDMO, or AAOIFI frameworks natively.</p>
+        <div class="icp-block">
+          <h5>Ideal Customer Profile</h5>
+          <p>Multinational entering UAE/KSA needing dual-jurisdiction compliance. Islamic fintech firm needing AAOIFI + PDPL tracking. Healthcare network in KSA or UAE.</p>
+        </div>
+        <div class="icp-block">
+          <h5>Go-to-Market</h5>
+          <p>Consultant-led through Dubai network. Partnerships with DIFC FinTech Hive and Hub71 accelerators. Reseller programme for GCC compliance consulting firms.</p>
+        </div>
+        <div class="market-tags">
+          <span class="market-tag">UAE PDPL</span>
+          <span class="market-tag">Saudi NDMO</span>
+          <span class="market-tag">AAOIFI</span>
+          <span class="market-tag">Vision 2030</span>
+          <span class="market-tag">DIFC</span>
+          <span class="market-tag">MOH Digital Health</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="gaps-section">
+  <div class="container">
+    <p class="section-label">Competitive Gap</p>
+    <h2 class="section-title" style="color:white">What every competitor<br>is missing</h2>
+    <div class="gaps-grid">
+      <div class="gap-card fade-in">
+        <div class="gap-num">01</div>
+        <h4>No affordable SMB tool</h4>
+        <p>Everything below $500/month is a generic reminder app. No affordable, industry-specific renewal management product exists for regulated SMBs.</p>
+      </div>
+      <div class="gap-card fade-in">
+        <div class="gap-num">02</div>
+        <h4>No GCC localisation</h4>
+        <p>Zero compliance SaaS tools cover UAE PDPL, Saudi NDMO AI frameworks, or AAOIFI Islamic Finance standards natively. The entire GCC market is underserved.</p>
+      </div>
+      <div class="gap-card fade-in">
+        <div class="gap-num">03</div>
+        <h4>Reminders without process</h4>
+        <p>Existing tools alert you a deadline is coming. None tell you the 12 steps to complete it, who owns each, what documents are needed, or how to generate the evidence file.</p>
+      </div>
+      <div class="gap-card fade-in">
+        <div class="gap-num">04</div>
+        <h4>No event-triggered logic</h4>
+        <p>No tool detects that "you updated your AI model → this resets your HIPAA review clock." That event-to-obligation intelligence is a clear moat if built first.</p>
+      </div>
+      <div class="gap-card fade-in">
+        <div class="gap-num">05</div>
+        <h4>No pre-loaded templates</h4>
+        <p>Generic GRC platforms list 200 frameworks with no guidance. ComplianceSync ships with pre-loaded, step-by-step renewal checklists specific to each compliance type.</p>
+      </div>
+      <div class="gap-card fade-in">
+        <div class="gap-num">06</div>
+        <h4>No consultant tier</h4>
+        <p>Compliance consultants managing 5–15 clients use spreadsheets and email. A white-label multi-agency dashboard at $399/month is an obvious product for this segment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <p class="section-label">Build Roadmap</p>
+    <h2 class="section-title">Four phases from<br>MVP to moat</h2>
+    <p class="section-sub">Start narrow with healthcare + HIPAA. Expand once the core engine is proven with paying customers.</p>
+    <div class="roadmap-track">
+      <div class="phase-card active">
+        <div class="phase-dot">P1</div>
+        <div class="phase-timeline">Weeks 1–10</div>
+        <h4>MVP</h4>
+        <p>Healthcare vertical, HIPAA core, deadline engine, doc vault, Stripe billing</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-dot">P2</div>
+        <div class="phase-timeline">Weeks 10–18</div>
+        <h4>Expand</h4>
+        <p>Fintech vertical, SOC 2 + PCI-DSS, Consultant tier, WhatsApp alerts</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-dot">P3</div>
+        <div class="phase-timeline">Weeks 18–26</div>
+        <h4>Scale</h4>
+        <p>HR vertical, Middle East jurisdiction pack, Arabic UI, GCC partnerships</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-dot">P4</div>
+        <div class="phase-timeline">Weeks 26+</div>
+        <h4>Moat</h4>
+        <p>Event-triggered compliance logic, AI obligation assistant, API access</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- MVP -->
+<section class="mvp-section">
+  <div class="container">
+    <p class="section-label">Phase 1 — MVP Scope</p>
+    <h2 class="section-title" style="color:white">8–10 weeks to<br>first paying customer</h2>
+    <div class="mvp-grid">
+      <div class="mvp-col">
+        <h4>Phase 1 deliverables</h4>
+        <div class="mvp-item"><div class="mvp-check">✓</div><span>Multi-tenant auth with Supabase RLS</span></div>
+        <div class="mvp-item"><div class="mvp-check">✓</div><span>Compliance tracker with deadline engine</span></div>
+        <div class="mvp-item"><div class="mvp-check">✓</div><span>HIPAA 14-step renewal checklist template</span></div>
+        <div class="mvp-item"><div class="mvp-check">✓</div><span>Document vault with version control</span></div>
+        <div class="mvp-item"><div class="mvp-check">✓</div><span>Email reminders at 90 / 60 / 30 / 7 days</span></div>
+        <div class="mvp-item"><div class="mvp-check">✓</div><span>Audit-ready PDF export</span></div>
+        <div class="mvp-item"><div class="mvp-check">✓</div><span>Stripe subscription — Starter + Professional</span></div>
+      </div>
+      <div class="mvp-col">
+        <h4>Key risks & mitigations</h4>
+        <div class="mvp-item"><div class="mvp-check">!</div><span><strong style="color:rgba(255,255,255,0.8)">Content maintenance</strong> — AI monitoring pipeline for regulatory feeds + quarterly manual review</span></div>
+        <div class="mvp-item"><div class="mvp-check">!</div><span><strong style="color:rgba(255,255,255,0.8)">Legal liability</strong> — Clear TOS disclaimers, "consult legal counsel" prompts throughout UI</span></div>
+        <div class="mvp-item"><div class="mvp-check">!</div><span><strong style="color:rgba(255,255,255,0.8)">Slow sales cycle</strong> — Freemium self-serve entry, low-friction trial, no sales call required</span></div>
+        <div class="mvp-item"><div class="mvp-check">!</div><span><strong style="color:rgba(255,255,255,0.8)">Stale database</strong> — Partnership with 1–2 compliance law firms for content review</span></div>
+        <div class="mvp-item"><div class="mvp-check">!</div><span><strong style="color:rgba(255,255,255,0.8)">GCC timing</strong> — US-first, GCC as Phase 3 with learnings already in hand</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>ComplianceSync</strong> &nbsp;·&nbsp; SaaS Product Plan &nbsp;·&nbsp; Prepared by Omer Farooq &nbsp;·&nbsp; 2025</p>
+  <p style="margin-top:0.5rem">Shared with Basit for review and discussion</p>
+</footer>
+
+</body>
+</html>

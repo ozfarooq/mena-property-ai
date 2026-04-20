@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1200" />
+<title>Compliance Renewal SaaS — Wireframes</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Architects+Daughter&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="src/tokens.css" />
+
+<style>
+  .topbar {
+    display:flex; align-items:center; gap:16px;
+    padding: 12px 20px;
+  }
+  .topbar h1 {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 24px;
+    margin: 0;
+    letter-spacing: 0.3px;
+  }
+  .topbar .sub { font-family: var(--font-hand); color: var(--pencil); font-size: 16px; }
+
+  .tabs {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    padding: 0 20px 10px;
+    border-bottom: 1.4px dashed var(--ink);
+  }
+  .tab {
+    font-family: var(--font-hand);
+    font-size: 17px;
+    padding: 5px 12px 6px;
+    border: 1.4px solid var(--ink);
+    border-radius: 12px 8px 14px 6px / 7px 12px 6px 13px;
+    background: var(--paper);
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .tab[aria-selected="true"] {
+    background: var(--ink); color: var(--paper);
+  }
+
+  .control-row {
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+    padding: 10px 20px;
+    font-family: var(--font-hand);
+    color: var(--pencil);
+    font-size: 15px;
+  }
+  .control-row .group { display:flex; gap:6px; align-items:center; }
+  .seg {
+    display: inline-flex; border: 1.4px solid var(--ink); border-radius: 10px; overflow: hidden;
+  }
+  .seg button {
+    font: inherit; font-family: var(--font-hand); font-size: 15px;
+    background: var(--paper); color: var(--ink);
+    border: none; padding: 3px 10px 4px; cursor: pointer;
+    border-right: 1.2px dashed var(--ink);
+  }
+  .seg button:last-child { border-right: none; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+  .canvas {
+    padding: 28px 30px 80px;
+    display: flex; flex-direction: column; gap: 30px;
+    align-items: center;
+  }
+  .canvas > h2 {
+    font-family: var(--font-hand);
+    font-size: 22px;
+    margin: 10px 0 -6px;
+    color: var(--pencil);
+    align-self: flex-start;
+    padding-left: 10px;
+  }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 1240px; }
+  @media (max-width: 1240px) { .row { grid-template-columns: 1fr; } }
+  .row .cell-label {
+    font-family: var(--font-hand);
+    font-size: 16px;
+    color: var(--pencil);
+    margin-bottom: 6px;
+  }
+
+  .favored-banner {
+    font-family: var(--font-hand);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+
+  /* tweaks panel */
+  .tweaks-panel {
+    position: fixed; right: 18px; bottom: 18px; width: 280px; z-index: 60;
+    background: var(--paper); border: 1.6px solid var(--ink); border-radius: 12px;
+    padding: 12px; font-family: var(--font-hand);
+    box-shadow: 0 12px 30px -10px rgba(0,0,0,0.25);
+  }
+  .tweaks-panel h3 { margin: 0 0 8px; font-size: 18px; font-weight: 700; }
+  .tweaks-panel label { display:flex; flex-direction:column; gap:4px; font-size:14px; color: var(--pencil); margin-bottom: 8px; }
+  .tweaks-panel select { font: inherit; font-size:14px; padding:3px 6px; border:1.3px solid var(--ink); border-radius:6px; background: var(--paper); }
+  .tweaks-panel .row-toggle { display:flex; align-items:center; justify-content:space-between; font-size:14px; color:var(--ink); }
+  .tweaks-panel.hidden { display:none; }
+
+  .legend { font-family: var(--font-hand); color: var(--pencil); font-size: 14px; display:flex; gap:12px; align-items:center; }
+
+  /* notes block at top */
+  .notes {
+    max-width: 1240px;
+    border: 1.4px dashed var(--ink);
+    background: #F9F5E7;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    margin: 0 auto 6px;
+    width: calc(100% - 60px);
+  }
+  .notes h3 { font-family: var(--font-hand); font-size: 20px; margin: 0 0 6px; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" src="src/primitives.jsx"></script>
+<script type="text/babel" src="src/screens/portfolio.jsx"></script>
+<script type="text/babel" src="src/screens/agency.jsx"></script>
+<script type="text/babel" src="src/screens/renewal.jsx"></script>
+<script type="text/babel" src="src/screens/vault.jsx"></script>
+<script type="text/babel" src="src/screens/reminders.jsx"></script>
+<script type="text/babel" src="src/screens/audit.jsx"></script>
+<script type="text/babel" src="src/screens/onboarding.jsx"></script>
+<script type="text/babel" src="src/screens/ai_whitelabel.jsx"></script>
+<script type="text/babel" src="src/screens/competitor.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// Tweakable defaults
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "vertical": "healthcare",
+  "density": "comfortable",
+  "whiteLabelChrome": false,
+  "showAllAiPostures": true
+}/*EDITMODE-END*/;
+
+const TABS = [
+  { id: "portfolio", label: "01 · Portfolio" },
+  { id: "agency",    label: "02 · Agency status" },
+  { id: "renewal",   label: "03 · Renewal detail" },
+  { id: "vault",     label: "04 · Doc vault" },
+  { id: "reminders", label: "05 · Reminders" },
+  { id: "audit",     label: "06 · Audit trail" },
+  { id: "onboard",   label: "07 · Onboarding" },
+  { id: "ai",        label: "08 · AI & risk" },
+  { id: "whitelabel",label: "09 · White-label" },
+  { id: "matrix",    label: "10 · Feature matrix" },
+  { id: "gaps",      label: "11 · Gaps to exploit" },
+  { id: "integrations", label: "12 · Integrations" },
+  { id: "trust",     label: "13 · Trust portal" },
+];
+
+function App() {
+  const [tab, setTab] = useState(() => localStorage.getItem("cr_tab") || "portfolio");
+  const [vertical, setVertical] = useState(TWEAKS.vertical);
+  const [density, setDensity] = useState(TWEAKS.density);
+  const [whiteLabel, setWhiteLabel] = useState(TWEAKS.whiteLabelChrome);
+  const [tweaksOn, setTweaksOn] = useState(false);
+
+  useEffect(() => { localStorage.setItem("cr_tab", tab); }, [tab]);
+
+  // Tweaks protocol
+  useEffect(() => {
+    function onMsg(e) {
+      const d = e.data || {};
+      if (d.type === "__activate_edit_mode") setTweaksOn(true);
+      if (d.type === "__deactivate_edit_mode") setTweaksOn(false);
+    }
+    window.addEventListener("message", onMsg);
+    window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
+
+  function persist(edits) {
+    window.parent.postMessage({ type: "__edit_mode_set_keys", edits }, "*");
+  }
+
+  const screenProps = { vertical, whiteLabel, dense: density === "compact" };
+
+  const screens = {
+    portfolio: [
+      { label: "v1 · background helper (status table)",   el: <PortfolioV1 {...screenProps} />, favored: false },
+      { label: "v2 · co-pilot panel (agency cards)",      el: <PortfolioV2 {...screenProps} />, favored: true },
+      { label: "v3 · AI-first (daily briefing cards)",    el: <PortfolioV3 {...screenProps} />, favored: false },
+      { label: "v4 · ambient (⌘K + pipeline lanes)",      el: <PortfolioV4 {...screenProps} />, favored: false },
+    ],
+    agency: [
+      { label: "v1 · background helper",  el: <AgencyV1 {...screenProps} /> },
+      { label: "v2 · co-pilot panel",     el: <AgencyV2 {...screenProps} /> },
+      { label: "v3 · AI-first briefing",  el: <AgencyV3 {...screenProps} /> },
+      { label: "v4 · ambient horizon",    el: <AgencyV4 {...screenProps} /> },
+    ],
+    renewal: [
+      { label: "v1 · classic checklist",  el: <RenewalV1 {...screenProps} /> },
+      { label: "v2 · co-pilot panel",     el: <RenewalV2 {...screenProps} /> },
+      { label: "v3 · conversational",     el: <RenewalV3 {...screenProps} /> },
+      { label: "v4 · stage board",        el: <RenewalV4 {...screenProps} /> },
+    ],
+    vault: [
+      { label: "v1 · library",            el: <VaultV1 {...screenProps} /> },
+      { label: "v2 · drop + co-pilot",    el: <VaultV2 {...screenProps} /> },
+      { label: "v3 · AI-first search",    el: <VaultV3 {...screenProps} /> },
+      { label: "v4 · evidence timeline",  el: <VaultV4 {...screenProps} /> },
+    ],
+    reminders: [
+      { label: "v1 · rule list",             el: <RemindersV1 {...screenProps} /> },
+      { label: "v2 · escalation builder",    el: <RemindersV2 {...screenProps} /> },
+      { label: "v3 · natural-language",      el: <RemindersV3 {...screenProps} /> },
+      { label: "v4 · calendar overlay",      el: <RemindersV4 {...screenProps} /> },
+    ],
+    audit: [
+      { label: "v1 · immutable log",         el: <AuditV1 {...screenProps} /> },
+      { label: "v2 · export builder",        el: <AuditV2 {...screenProps} /> },
+      { label: "v3 · AI narrative",          el: <AuditV3 {...screenProps} /> },
+      { label: "v4 · feed + command",        el: <AuditV4 {...screenProps} /> },
+    ],
+    onboard: [
+      { label: "v1 · stepped wizard",        el: <OnboardV1 {...screenProps} /> },
+      { label: "v2 · import + suggest",      el: <OnboardV2 {...screenProps} /> },
+      { label: "v3 · AI interview",          el: <OnboardV3 {...screenProps} /> },
+      { label: "v4 · shelf of blocks",       el: <OnboardV4 {...screenProps} /> },
+    ],
+    ai: [
+      { label: "v1 · inline badges",         el: <AiPanelV1 {...screenProps} /> },
+      { label: "v2 · co-pilot (canonical)",  el: <AiPanelV2 {...screenProps} />, favored: true },
+      { label: "v3 · AI-first console",      el: <AiPanelV3 {...screenProps} /> },
+      { label: "v4 · ambient hotspots",      el: <AiPanelV4 {...screenProps} /> },
+    ],
+    whitelabel: [
+      { label: "consultant-tier settings",   el: <WhiteLabelScreen {...screenProps} /> },
+    ],
+    matrix:      [ { label: "us vs. 8 competitors",       el: <FeatureMatrixScreen /> } ],
+    gaps:        [ { label: "wedges into the market",     el: <GapsScreen /> } ],
+    integrations:[ { label: "evidence auto-pull catalog", el: <IntegrationsScreen /> } ],
+    trust:       [ { label: "client-facing transparency", el: <TrustPortalScreen /> } ],
+  };
+
+  const current = screens[tab];
+
+  return (
+    <div data-screen-label="Wireframe explorer">
+      <div className="toprail">
+        <div className="topbar">
+          <h1>Compliance Renewal SaaS — wireframes</h1>
+          <span className="sub">consultant / agency tier · 4 AI-prominence directions per screen</span>
+          <span style={{ flex: 1 }} />
+          <div className="legend">
+            <span className="chip g"><span className="dot" />on track</span>
+            <span className="chip a"><span className="dot" />due soon</span>
+            <span className="chip r"><span className="dot" />overdue</span>
+          </div>
+        </div>
+        <div className="tabs" role="tablist">
+          {TABS.map(t => (
+            <button key={t.id} className="tab" role="tab"
+              aria-selected={tab===t.id}
+              onClick={() => setTab(t.id)}>{t.label}</button>
+          ))}
+        </div>
+        <div className="control-row">
+          <div className="group">
+            <span>vertical:</span>
+            <div className="seg">
+              {[["all","mix"],["healthcare","healthcare"],["fintech","fintech"],["hr","HR"]].map(([v,l])=>(
+                <button key={v} aria-pressed={vertical===v} onClick={()=>{ setVertical(v); persist({vertical:v}); }}>{l}</button>
+              ))}
+            </div>
+          </div>
+          <div className="group">
+            <span>density:</span>
+            <div className="seg">
+              {[["comfortable","comfortable"],["compact","compact"]].map(([v,l])=>(
+                <button key={v} aria-pressed={density===v} onClick={()=>{ setDensity(v); persist({density:v}); }}>{l}</button>
+              ))}
+            </div>
+          </div>
+          <div className="group">
+            <span>white-label chrome:</span>
+            <div className="seg">
+              <button aria-pressed={!whiteLabel} onClick={()=>{ setWhiteLabel(false); persist({whiteLabelChrome:false}); }}>consultant view</button>
+              <button aria-pressed={whiteLabel} onClick={()=>{ setWhiteLabel(true); persist({whiteLabelChrome:true}); }}>client view</button>
+            </div>
+          </div>
+          <span style={{ flex:1 }} />
+          <span className="meta">press a tab · state persists · "Tweaks" in toolbar opens a panel</span>
+        </div>
+      </div>
+
+      {tab === "portfolio" && (
+        <div className="notes">
+          <h3>why these four — AI prominence axis</h3>
+          <div>
+            Each screen is rendered 4 ways, from quiet to loud:
+            <b> v1</b> background helper (inline ✦ badges, no panel) ·
+            <b> v2</b> dedicated co-pilot side panel (the canonical Claude-style pattern) ·
+            <b> v3</b> AI-first (the screen IS a conversation / briefing) ·
+            <b> v4</b> ambient (command bar ⌘K + inline suggestions, no dedicated surface).
+            Tab 01 also includes a <b>mid-fi rendering</b> of the favored v2 direction.
+          </div>
+        </div>
+      )}
+
+      <div className="canvas">
+        {tab === "portfolio" && (
+          <>
+            <h2>▸ four directions</h2>
+            <div className="row">
+              {current.map((v,i)=>(
+                <div key={i}>
+                  {v.favored && <div className="favored-banner">✦ favored direction</div>}
+                  <div className="cell-label">{v.label}</div>
+                  {v.el}
+                </div>
+              ))}
+            </div>
+            <h2 style={{ marginTop: 30 }}>▸ mid-fi rendering of the favored direction</h2>
+            <div className="cell-label">co-pilot panel · cleaned up · this is the one to prototype next</div>
+            <PortfolioMidFi vertical={vertical} whiteLabel={whiteLabel} />
+          </>
+        )}
+        {!["portfolio","whitelabel","matrix","gaps","integrations","trust"].includes(tab) && (
+          <>
+            <h2>▸ four AI-prominence directions</h2>
+            <div className="row">
+              {current.map((v,i)=>(
+                <div key={i}>
+                  {v.favored && <div className="favored-banner">✦ favored direction</div>}
+                  <div className="cell-label">{v.label}</div>
+                  {v.el}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        {(tab === "whitelabel" || tab === "matrix" || tab === "gaps" || tab === "integrations" || tab === "trust") && (
+          <>
+            <h2>▸ {tab === "matrix" ? "competitor feature matrix" : tab === "gaps" ? "where we win" : tab === "integrations" ? "integrations catalog" : tab === "trust" ? "public trust portal" : "client-branded portal"}</h2>
+            <div style={{ width: "100%", maxWidth: 1240, display:"flex", justifyContent:"center" }}>
+              {current[0].el}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Tweaks panel (only visible when Tweaks toggle is on) */}
+      <div className={`tweaks-panel ${tweaksOn ? "" : "hidden"}`}>
+        <h3>Tweaks</h3>
+        <label>
+          vertical (sample data)
+          <select value={vertical} onChange={e=>{ setVertical(e.target.value); persist({vertical:e.target.value}); }}>
+            <option value="all">mix · all three</option>
+            <option value="healthcare">healthcare</option>
+            <option value="fintech">fintech</option>
+            <option value="hr">HR / recruitment</option>
+          </select>
+        </label>
+        <label>
+          density
+          <select value={density} onChange={e=>{ setDensity(e.target.value); persist({density:e.target.value}); }}>
+            <option value="comfortable">comfortable</option>
+            <option value="compact">compact</option>
+          </select>
+        </label>
+        <div className="row-toggle">
+          <span>white-label chrome (client view)</span>
+          <input type="checkbox" checked={whiteLabel} onChange={e=>{ setWhiteLabel(e.target.checked); persist({whiteLabelChrome:e.target.checked}); }} />
+        </div>
+        <div style={{ fontSize: 12, color: "var(--pencil)", marginTop: 8 }}>
+          Changes save to disk · toggle the toolbar "Tweaks" to hide this panel.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+</body>
+</html>

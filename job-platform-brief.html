@@ -1213,7 +1213,7 @@
 
   <div class="nav-section">
     <div class="nav-label">Overview</div>
-    <a href="#overview" class="nav-item active"><span class="nav-dot"></span>Product Philosophy</a>
+    <a href="#overview" class="nav-item active"><span class="nav-dot"></span>Full Briefing</a>
     <a href="#platforms" class="nav-item"><span class="nav-dot"></span>Target Platforms</a>
   </div>
 
@@ -1252,9 +1252,9 @@
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow">Product Brief</div>
+    <div class="hero-eyebrow">Product Brief — Confidential</div>
     <h1 class="hero-title">Apply<span class="highlight">IQ</span><br>AI Job Platform</h1>
-    <p class="hero-sub">An AI-powered job application platform that fetches jobs from the top 5 platforms, tailors your CV and cover letter with Claude AI, and puts you in front of employers — confident and ready.</p>
+    <p class="hero-sub">An AI-powered job application platform that fetches jobs from the top 5 platforms, tailors your CV and cover letter with Claude AI per job, and gets you to the Apply button confident and ready — in 30 seconds instead of 45 minutes.</p>
     <div class="hero-meta">
       <div class="meta-item">
         <span class="meta-label">Markets</span>
@@ -1266,28 +1266,142 @@
       </div>
       <div class="meta-item">
         <span class="meta-label">Model</span>
-        <span class="meta-value">SaaS Subscription</span>
+        <span class="meta-value">SaaS Subscription + Credits</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Launch</span>
         <span class="meta-value">MVP → Validate → Scale</span>
       </div>
+      <div class="meta-item">
+        <span class="meta-label">MVP Timeline</span>
+        <span class="meta-value">6 Weeks</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Fixed Cost at Zero Users</span>
+        <span class="meta-value">~$70/month</span>
+      </div>
     </div>
   </div>
 
-  <!-- PHILOSOPHY -->
+  <!-- FULL BRIEFING -->
   <div class="section" id="overview">
     <div class="section-header">
       <div class="section-number">01</div>
       <div>
-        <div class="section-title">Core Philosophy</div>
-        <div class="section-desc">Why we build it this way</div>
+        <div class="section-title">The Idea & Why Now</div>
+        <div class="section-desc">Full briefing — read this first</div>
       </div>
     </div>
+
+    <!-- THE PROBLEM -->
+    <div style="margin-bottom: 40px;">
+      <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+        <span style="color: var(--accent); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">The Problem</span>
+      </div>
+      <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; font-size: 15px; color: var(--text-muted); line-height: 1.85;">
+        Job hunting is broken for the modern professional. A serious job seeker applying to 20 roles a week spends <strong style="color: var(--text);">roughly 15 hours</strong> just on tailoring CVs and writing cover letters — before a single recruiter has even opened their application. Every job demands a different emphasis, different keywords, different tone. Doing it properly takes 45 minutes per application. Doing it lazily gets you ignored by ATS systems before a human ever sees your name.<br><br>
+        The existing solutions made this worse, not better. Tools like LazyApply and LoopCV promised to solve the problem with volume — blast 200 applications, something will stick. The result: recruiters are now actively trained to spot and filter bulk AI applications. There are LinkedIn posts from hiring managers with hundreds of thousands of views specifically calling out auto-apply spam. Candidates who used these tools applied to 500 jobs and heard nothing. The tools optimised for the wrong metric.
+      </div>
+    </div>
+
+    <!-- THE OPPORTUNITY -->
+    <div style="margin-bottom: 40px;">
+      <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 16px;">
+        <span style="color: var(--accent3); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">The Opportunity</span>
+      </div>
+      <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; font-size: 15px; color: var(--text-muted); line-height: 1.85;">
+        The GCC/UAE and Pakistan job markets are underserved by every major tool in this space. LazyApply, AIApply, LoopCV, JobCopilot, Sonara — all are built for LinkedIn/Indeed/Glassdoor with a Western job seeker in mind. None of them integrate with Bayt.com, Naukri Gulf, or Rozee.pk. None of them handle Arabic language applications. None of them understand that a CV for a Dubai-based role needs to include visa status, nationality, and a photo placeholder — conventions that are standard in the GCC but absent from Western tools.<br><br>
+        The GCC is home to over <strong style="color: var(--text);">10 million South Asian expat professionals</strong>, the majority of whom are either actively job-seeking or open to opportunities. Dubai's tech hiring community is tight-knit and word-of-mouth driven. A product that genuinely helps someone land interviews travels fast in that network. This is our primary beachhead.
+      </div>
+    </div>
+
+    <!-- WHAT WE'RE BUILDING -->
+    <div style="margin-bottom: 40px;">
+      <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 16px;">
+        <span style="color: var(--accent2); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">What We're Building</span>
+      </div>
+      <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; font-size: 15px; color: var(--text-muted); line-height: 1.85;">
+        ApplyIQ is a platform where a user signs up, builds a master profile once, sets their job preferences (role, location, salary, seniority), and the platform does the rest. It fetches matching jobs every 6–12 hours from LinkedIn, Indeed, Bayt.com, Naukri Gulf, and Rozee.pk using legitimate job APIs — no scraping, no Terms of Service risk. For every matched job, it runs three sequential Claude AI calls: first to analyse the job description, second to tailor the user's CV to that specific role, third to write a personalised cover letter.<br><br>
+        The user then sees a clean review queue. For each job: the role, the company, their tailored CV, and the cover letter — side by side. They review, optionally edit, and click Apply. They are redirected to the job platform with the cover letter copied to their clipboard. The entire "apply" action takes <strong style="color: var(--text);">30 seconds</strong>. The hard work — the 45-minute part — was done by the AI.<br><br>
+        We are deliberately <strong style="color: var(--text);">not</strong> building auto-apply. This is not a limitation — it is our differentiation. Auto-apply is technically fragile (CAPTCHA, bot detection, form variability), legally risky (LinkedIn ToS violation), and produces low-quality outcomes that hurt users. The platforms that built it are fighting a permanent cat-and-mouse war with job boards. We compete on quality, not volume.
+      </div>
+    </div>
+
+    <!-- COMPETITIVE LANDSCAPE -->
+    <div style="margin-bottom: 40px;">
+      <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 16px;">
+        <span style="color: var(--accent4); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Competitive Landscape</span>
+      </div>
+      <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border);">
+          <div style="padding: 12px 20px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim);">Platform</div>
+          <div style="padding: 12px 16px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim);">Auto-Apply</div>
+          <div style="padding: 12px 16px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim);">CV Tailoring</div>
+          <div style="padding: 12px 16px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim);">GCC/Arabic</div>
+          <div style="padding: 12px 16px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim);">Rozee/Bayt</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border);">
+          <div style="padding: 14px 20px; font-size: 13px; color: var(--text);">LazyApply</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border);">
+          <div style="padding: 14px 20px; font-size: 13px; color: var(--text);">AIApply</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border);">
+          <div style="padding: 14px 20px; font-size: 13px; color: var(--text);">JobCopilot</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border);">
+          <div style="padding: 14px 20px; font-size: 13px; color: var(--text);">LoopCV</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--red);">✗ No</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; background: rgba(99,179,237,0.04);">
+          <div style="padding: 14px 20px; font-size: 13px; color: var(--accent); font-family: 'Syne', sans-serif; font-weight: 700;">ApplyIQ ← Us</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent4);">Review mode</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+          <div style="padding: 14px 16px; font-size: 13px; color: var(--accent3);">✓ Yes</div>
+        </div>
+      </div>
+      <div style="margin-top: 12px; font-size: 13px; color: var(--text-muted); padding: 0 4px;">The gap is real and unoccupied. No competitor owns the GCC/Pakistan corridor. That is our entry point.</div>
+    </div>
+
+    <!-- WHY NOT AUTO-APPLY -->
+    <div style="margin-bottom: 40px;">
+      <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 16px;">
+        <span style="color: var(--red); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Why We Don't Auto-Apply</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="background: rgba(252,129,129,0.05); border: 1px solid rgba(252,129,129,0.15); border-radius: 12px; padding: 24px;">
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--red); margin-bottom: 12px;">The Technical Problem</div>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.7;">LinkedIn actively detects and bans automation. Every Easy Apply form is different — some have 3 fields, some have 30, with custom screening questions, portfolio uploads, embedded tests. Your bot breaks on every non-standard form. Maintaining this is a permanent war, not a one-time build. Residential proxies to avoid detection cost $300–500/month before you've made a dollar.</div>
+        </div>
+        <div style="background: rgba(252,129,129,0.05); border: 1px solid rgba(252,129,129,0.15); border-radius: 12px; padding: 24px;">
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--red); margin-bottom: 12px;">The Product Problem</div>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.7;">Mass applying destroys candidate reputation. In the GCC, the professional community is small — Dubai's tech hiring circle knows each other. A candidate who spam-applied to the same company three times via different postings gets remembered for the wrong reason. Users who auto-blasted 300 jobs and heard nothing churn with bad reviews. The tool that causes this gets the blame, not the strategy.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHILOSOPHY QUOTE -->
     <div class="philosophy-block">
       <div class="philosophy-text">"We make every application your best application — you decide when to send it."</div>
-      <div class="philosophy-note">Auto-apply solves the wrong problem. The painful part of job hunting is not clicking Apply — it is tailoring your CV and writing a cover letter for every job. That takes 45 minutes per application. If we solve that, the user clicking Apply themselves takes 30 seconds and costs nothing in infrastructure, legal risk, or quality problems.<br><br>The platforms that have seen backlash (LazyApply, LoopCV) optimise for volume. We optimise for signal. A well-tailored application to 10 relevant jobs outperforms 200 generic blasts consistently.</div>
+      <div class="philosophy-note">The painful part of job hunting is not clicking Apply. It is tailoring your CV and writing a cover letter for every single job — knowing that a generic application will be filtered before a human reads it. That is what takes 45 minutes per role. We eliminate that 45 minutes entirely. The user spends 30 seconds reviewing what the AI prepared, then clicks Apply. That is the product.</div>
     </div>
+
   </div>
 
   <!-- PLATFORMS -->
